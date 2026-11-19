@@ -35,10 +35,17 @@ async function adminLogin(){
   const uid=credential.user.uid;
 
   const profile=await firebaseDB.collection("pengguna").doc(uid).get();
+  const data=profile.exists ? profile.data() : {};
+
+  console.log("UID LOGIN:", uid);
+  console.log("DOKUMEN HRD ADA:", profile.exists);
+  console.log("DATA PROFIL HRD:", data);
+  console.log("PERAN:", JSON.stringify(data.peran));
+  console.log("AKTIF:", JSON.stringify(data.aktif));
 
   if(!profile.exists ||
-     profile.data().peran !== "hrd" ||
-     profile.data().aktif !== true){
+     data.peran !== "hrd" ||
+     data.aktif !== true){
     await firebaseAuth.signOut();
     return alert("Akun ini belum terdaftar sebagai HRD aktif. Periksa profil HRD di Firestore.");
   }
