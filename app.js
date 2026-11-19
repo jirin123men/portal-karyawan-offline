@@ -34,11 +34,11 @@ async function adminLogin(){
   const credential=await firebaseAuth.signInWithEmailAndPassword(email,password);
   const uid=credential.user.uid;
 
-  const profile=await firebaseDB.collection("users").doc(uid).get();
+  const profile=await firebaseDB.collection("pengguna").doc(uid).get();
 
   if(!profile.exists ||
-     profile.data().role !== "hrd" ||
-     profile.data().active !== true){
+     profile.data().peran !== "hrd" ||
+     profile.data().aktif !== true){
     await firebaseAuth.signOut();
     return alert("Akun ini belum terdaftar sebagai HRD aktif. Periksa profil HRD di Firestore.");
   }
@@ -48,8 +48,12 @@ async function adminLogin(){
   show("adminScreen");
 
  }catch(e){
-  console.error("Login HRD:",e);
-  alert("Login HRD gagal: "+e.message);
+  console.error("LOGIN HRD DETAIL:", {
+    code: e.code,
+    message: e.message,
+    name: e.name
+  });
+  alert("Login HRD gagal. Kode: "+(e.code || "tidak diketahui")+" | "+e.message);
  }
 }
 async function registerHrd(){
