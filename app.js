@@ -7,7 +7,8 @@ let currentEmployee=null, scannedEmployee=null, cameraStream=null, scanTimer=nul
 function save(){localStorage.setItem(DBKEY,JSON.stringify(db))}
 function el(id){return document.getElementById(id)}
 function safe(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function show(id){["setupScreen","loginScreen","adminScreen","employeeScreen"].forEach(x=>el(x).classList.add("hidden"));el(id).classList.remove("hidden")}
+function show(id){["setupScreen","loginScreen","registerScreen","adminScreen","employeeScreen"].forEach(x=>el(x).classList.add("hidden"));el(id).classList.remove("hidden")}
+function showRegister(){show("registerScreen")}
 function randomToken(){const a=new Uint8Array(24);crypto.getRandomValues(a);return [...a].map(x=>x.toString(16).padStart(2,"0")).join("")}
 function randomPin(){return String(Math.floor(100000+Math.random()*900000))}
 async function hashPin(pin){if(!crypto.subtle)throw Error("Fitur keamanan PIN membutuhkan browser yang mendukung Web Crypto dan konteks aman (HTTPS atau localhost).");const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(pin));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
@@ -51,6 +52,49 @@ async function adminLogin(){
   alert("Login HRD gagal: "+e.message);
  }
 }
+async function registerHrd(){
+ const name=el("registerName").value.trim();
+ const email=el("registerEmail").value.trim();
+ const password=el("registerPassword").value;
+ const confirm=el("registerConfirm").value;
+
+ if(!name || !email || !password || !confirm){
+  return alert("Semua kolom wajib diisi.");
+ }
+ if(password.length < 6){
+  return alert("Password minimal 6 karakter.");
+ }
+ if(password !== confirm){
+  return alert("Konfirmasi password tidak sama.");
+ }
+
+ try{
+  const credential=await firebaseAuth.createUserWithEmailAndPassword(email,password);
+  const uid=credential.user.uid;
+
+  try{
+   await credential.user.updateProfile({displayName:name});
+  }catch(profileError){
+   console.warn("Nama profil belum tersimpan:",profileError);
+  }
+
+  await firebaseAuth.signOut();
+
+  ["registerName","registerEmail","registerPassword","registerConfirm"].forEach(id=>el(id).value="");
+
+  alert("Pendaftaran berhasil. UID: "+uid+"\\n\\nAkun belum memiliki akses HRD. Hubungi HRD utama untuk persetujuan.");
+  show("loginScreen");
+
+ }catch(e){
+  console.error("Pendaftaran HRD:",e);
+  let message=e.message;
+  if(e.code==="auth/email-already-in-use") message="Email sudah terdaftar. Gunakan email lain.";
+  if(e.code==="auth/invalid-email") message="Format email tidak valid.";
+  if(e.code==="auth/weak-password") message="Password terlalu lemah. Gunakan minimal 6 karakter.";
+  alert("Pendaftaran gagal: "+message);
+ }
+}
+
 function logout(){stopScan();currentEmployee=null;scannedEmployee=null;show("loginScreen")}
 function renderAdmin(){
  el("totalEmployees").textContent=db.employees.length;

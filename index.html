@@ -73,6 +73,11 @@ hr{border:0;border-top:1px solid #edf0f5;margin:15px 0}
 <input id="adminPassword" type="password" autocomplete="current-password" placeholder="Masukkan password">
 <button class="full" onclick="adminLogin()">MASUK HRD</button>
 </div>
+<div class="card center">
+<h3>Belum mempunyai akun HRD?</h3>
+<p class="muted">Buat akun administrator baru. Akses HRD memerlukan persetujuan HRD utama.</p>
+<button class="full green" onclick="showRegister()">DAFTAR AKUN HRD</button>
+</div>
 <div class="card">
 <h3>Portal Karyawan</h3>
 <p class="muted">Scan QR Code pada kartu karyawan untuk masuk atau aktivasi akun.</p>
@@ -95,6 +100,30 @@ hr{border:0;border-top:1px solid #edf0f5;margin:15px 0}
 <button class="full" onclick="employeeLogin()">MASUK PORTAL</button>
 </div>
 </div>
+</div>
+</section>
+
+<section id="registerScreen" class="hidden">
+<div class="card">
+<h3>Daftar Akun HRD</h3>
+<p class="muted">Isi data untuk membuat akun administrator baru.</p>
+
+<label>Nama lengkap</label>
+<input id="registerName" type="text" autocomplete="name" placeholder="Nama lengkap">
+
+<label>Email</label>
+<input id="registerEmail" type="email" autocomplete="email" placeholder="Alamat email aktif">
+
+<label>Password</label>
+<input id="registerPassword" type="password" autocomplete="new-password" placeholder="Minimal 6 karakter">
+
+<label>Konfirmasi password</label>
+<input id="registerConfirm" type="password" autocomplete="new-password" placeholder="Ulangi password">
+
+<button class="full green" onclick="registerHrd()">DAFTAR SEKARANG</button>
+<button class="full secondary" onclick="show('loginScreen')">KEMBALI KE LOGIN</button>
+
+<p class="small">Pendaftaran belum memberikan hak akses HRD. HRD utama harus menyetujui akun melalui Firebase Firestore.</p>
 </div>
 </section>
 
