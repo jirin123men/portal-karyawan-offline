@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#102b63">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Portal Karyawan">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Portal Karyawan Offline</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f1f4fa;color:#17233c;font-family:Arial,sans-serif}
+header{background:linear-gradient(135deg,#102b63,#1768bd);color:white;padding:24px 18px;border-radius:0 0 24px 24px}
+header h2{margin:0 0 5px;font-size:21px}
+header p{margin:0;color:#dceaff;font-size:12px}
+main{max-width:650px;margin:auto;padding:16px 14px 45px}
+.card{background:white;border-radius:16px;padding:17px;margin-bottom:14px;box-shadow:0 3px 15px #152c5010}
+h3{margin:0 0 14px;font-size:17px}
+h4{margin:12px 0 8px}
+label{display:block;font-size:13px;margin:12px 0 6px;color:#536078}
+input,select,textarea{width:100%;padding:13px;border:1px solid #dce2ec;border-radius:10px;font-size:15px;background:white;color:#17233c}
+textarea{min-height:75px}
+button{border:0;border-radius:10px;padding:13px 15px;background:#1768bd;color:white;font-weight:bold;font-size:14px;cursor:pointer}
+button.secondary{background:#e8f0fc;color:#14549c}
+button.danger{background:#b92e3b}
+button.green{background:#168052}
+button.full{width:100%;margin-top:11px}
+button.smallbtn{padding:8px 10px;font-size:12px;margin:3px}
+.muted{color:#69758a;font-size:13px;line-height:1.5}
+.small{font-size:11px;color:#758198;line-height:1.5}
+.hidden{display:none!important}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:#edf4ff;border-radius:12px;padding:14px}
+.stat strong{font-size:24px;display:block;color:#14549c}
+.stat span{font-size:12px;color:#536078}
+.item{padding:13px 0;border-bottom:1px solid #edf0f5;font-size:13px;line-height:1.6}
+.item:last-child{border:0}
+.status{display:inline-block;padding:5px 9px;border-radius:20px;background:#fff1d6;color:#956000;font-size:11px;font-weight:bold}
+.ok{background:#def7e9;color:#137342}
+.no{background:#ffe4e4;color:#a12727}
+.actions{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+#camera{width:100%;background:#111;border-radius:12px;max-height:330px;object-fit:cover}
+.qrimg{width:180px;height:180px;display:block;margin:12px auto}
+.center{text-align:center}
+hr{border:0;border-top:1px solid #edf0f5;margin:15px 0}
+</style>
+</head>
+<body>
+<header>
+<h2>Portal Karyawan Offline</h2>
+<p>Sistem Karyawan • HRD • Absensi • QR Code</p>
+</header>
+<main>
+
+<section id="setupScreen" class="hidden">
+<div class="card">
+<h3>Pengaturan Awal HRD</h3>
+<p class="muted">Buat akun administrator untuk mengelola data karyawan pada perangkat ini.</p>
+<label>Nama HRD</label><input id="setupName" placeholder="Nama administrator">
+<label>PIN HRD (minimal 6 angka)</label><input id="setupPin" type="password" inputmode="numeric" maxlength="12">
+<button class="full" onclick="setupAdmin()">BUAT AKUN HRD</button>
+</div>
+</section>
+
+<section id="loginScreen" class="hidden">
+<div class="card">
+<h3>Login HRD / Admin</h3>
+<label>PIN administrator</label>
+<input id="adminLoginPin" type="password" inputmode="numeric" placeholder="Masukkan PIN HRD">
+<button class="full" onclick="adminLogin()">MASUK HRD</button>
+</div>
+<div class="card">
+<h3>Portal Karyawan</h3>
+<p class="muted">Scan QR Code pada kartu karyawan untuk masuk atau aktivasi akun.</p>
+<button class="full green" onclick="startScan()">📷 SCAN QR KARYAWAN</button>
+<video id="camera" class="hidden" autoplay muted playsinline></video>
+<canvas id="scanCanvas" class="hidden"></canvas>
+<button id="stopScan" class="full danger hidden" onclick="stopScan()">TUTUP KAMERA</button>
+<div id="employeeLoginBox" class="hidden">
+<hr>
+<h4 id="scanTitle">Login Karyawan</h4>
+<p id="scanInfo" class="muted"></p>
+<div id="activationFields" class="hidden">
+<label>PIN aktivasi dari HRD</label><input id="activationPin" type="password" inputmode="numeric">
+<label>Buat PIN pribadi (minimal 6 angka)</label><input id="newEmployeePin" type="password" inputmode="numeric">
+<label>Ulangi PIN pribadi</label><input id="repeatEmployeePin" type="password" inputmode="numeric">
+<button class="full green" onclick="activateEmployee()">AKTIFKAN AKUN</button>
+</div>
+<div id="employeeLoginFields" class="hidden">
+<label>PIN pribadi karyawan</label><input id="employeePin" type="password" inputmode="numeric">
+<button class="full" onclick="employeeLogin()">MASUK PORTAL</button>
+</div>
+</div>
+</div>
+</section>
+
+<section id="adminScreen" class="hidden">
+<div class="card">
+<h3>Dashboard HRD</h3>
+<div class="grid">
+<div class="stat"><strong id="totalEmployees">0</strong><span>Total karyawan</span></div>
+<div class="stat"><strong id="totalPending">0</strong><span>Pengajuan menunggu</span></div>
+</div>
+<button class="full secondary" onclick="logout()">KELUAR HRD</button>
+</div>
+<div class="card">
+<h3>Tambah Karyawan</h3>
+<label>ID Karyawan</label><input id="newId" placeholder="Contoh KRY001">
+<label>Nama lengkap</label><input id="newName" placeholder="Nama karyawan">
+<label>Jabatan</label><input id="newTitle" placeholder="Staff">
+<label>Divisi / Bagian</label><input id="newDivision" placeholder="Produksi">
+<button class="full" onclick="addEmployee()">BUAT KARYAWAN + QR CODE</button>
+<div id="newQrResult"></div>
+</div>
+<div class="card">
+<h3>Daftar Karyawan</h3>
+<div id="employeeList"></div>
+</div>
+<div class="card">
+<h3>Persetujuan Izin / Cuti</h3>
+<div id="adminLeaveList"></div>
+</div>
+<div class="card">
+<h3>Rekap Absensi</h3>
+<div id="adminAttendanceList"></div>
+</div>
+<div class="card">
+<h3>Backup dan Pemulihan</h3>
+<button class="full" onclick="exportBackup()">EKSPOR BACKUP JSON</button>
+<label>Impor backup JSON</label>
+<input type="file" id="backupFile" accept=".json,application/json">
+<button class="full secondary" onclick="importBackup()">PULIHKAN BACKUP</button>
+<p class="small">Simpan backup di tempat aman. Data hanya tersimpan pada browser perangkat ini.</p>
+</div>
+</section>
+
+<section id="employeeScreen" class="hidden">
+<div class="card">
+<h3 id="employeeWelcome">Portal Karyawan</h3>
+<p id="employeeProfile" class="muted"></p>
+<div class="grid">
+<div class="stat"><strong id="myAttendance">0</strong><span>Absensi saya</span></div>
+<div class="stat"><strong id="myLeaves">0</strong><span>Pengajuan saya</span></div>
+</div>
+<button class="full secondary" onclick="logout()">KELUAR</button>
+</div>
+<div class="card">
+<h3>Absensi Hari Ini</h3>
+<p id="todayAttendance" class="muted">Belum ada absensi hari ini.</p>
+<button class="full green" onclick="markAttendance('Masuk')">ABSEN MASUK</button>
+<button class="full secondary" onclick="markAttendance('Pulang')">ABSEN PULANG</button>
+</div>
+<div class="card">
+<h3>Pengajuan Izin / Cuti / Sakit</h3>
+<label>Jenis pengajuan</label>
+<select id="leaveType"><option>Izin</option><option>Cuti</option><option>Sakit</option></select>
+<label>Tanggal mulai</label><input id="leaveStart" type="date">
+<label>Tanggal selesai</label><input id="leaveEnd" type="date">
+<label>Alasan</label><textarea id="leaveReason" placeholder="Tuliskan alasan"></textarea>
+<button class="full" onclick="submitLeave()">KIRIM PENGAJUAN</button>
+</div>
+<div class="card">
+<h3>Riwayat Pengajuan</h3><div id="myLeaveList"></div>
+</div>
+<div class="card">
+<h3>Riwayat Absensi</h3><div id="myAttendanceList"></div>
+</div>
+</section>
+
+</main>
+<script src="qrcode-generator.js"></script>
+<script src="jsQR.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

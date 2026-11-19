@@ -1,0 +1,9 @@
+{
+  "name": "CekKaryawan Offline Pro",
+  "short_name": "CekKaryawan",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f1f4fa",
+  "theme_color": "#102b63",
+  "description": "Portal karyawan offline untuk Android dan iPhone"
+}
