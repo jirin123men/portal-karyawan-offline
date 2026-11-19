@@ -33,7 +33,7 @@ async function adminLogin(){
   const credential=await firebaseAuth.signInWithEmailAndPassword(email,password);
   const uid=credential.user.uid;
 
-  const profile=await firebaseDB.collection("pengguna").doc(uid).get();
+  const profile=await firebaseDB.collection("users").doc(uid).get();
 
   if(!profile.exists ||
      profile.data().role !== "hrd" ||
