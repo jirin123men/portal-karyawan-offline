@@ -65,9 +65,12 @@ hr{border:0;border-top:1px solid #edf0f5;margin:15px 0}
 
 <section id="loginScreen" class="hidden">
 <div class="card">
-<h3>Login HRD / Admin</h3>
-<label>PIN administrator</label>
-<input id="adminLoginPin" type="password" inputmode="numeric" placeholder="Masukkan PIN HRD">
+<h3>Login HRD / Administrator</h3>
+<p class="muted">Masuk menggunakan akun email HRD yang terdaftar.</p>
+<label>Email HRD</label>
+<input id="adminEmail" type="email" autocomplete="username" placeholder="Masukkan email HRD">
+<label>Password</label>
+<input id="adminPassword" type="password" autocomplete="current-password" placeholder="Masukkan password">
 <button class="full" onclick="adminLogin()">MASUK HRD</button>
 </div>
 <div class="card">
@@ -171,6 +174,11 @@ hr{border:0;border-top:1px solid #edf0f5;margin:15px 0}
 </main>
 <script src="qrcode-generator.js"></script>
 <script src="jsQR.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="firebase-init.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

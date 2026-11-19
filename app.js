@@ -15,15 +15,41 @@ function today(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth
 function timeNow(){return new Date().toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"})}
 function qrData(token){return JSON.stringify({app:"CEKKARYAWAN_OFFLINE",token})}
 function makeQr(token){const q=qrcode(0,"M");q.addData(qrData(token));q.make();return q.createDataURL(6,4)}
-function init(){if(!db.admin)show("setupScreen");else show("loginScreen")}
+function init(){show("loginScreen")}
 async function setupAdmin(){
  const name=el("setupName").value.trim(),pin=el("setupPin").value.trim();
  if(!name||!/^\d{6,12}$/.test(pin))return alert("Isi nama HRD dan PIN 6–12 angka.");
  try{db.admin={name,pinHash:await hashPin(pin)};save();el("setupPin").value="";alert("Akun HRD berhasil dibuat. Simpan PIN dengan aman.");show("loginScreen")}catch(e){alert(e.message)}
 }
 async function adminLogin(){
- const pin=el("adminLoginPin").value.trim();
- try{if(await hashPin(pin)!==db.admin.pinHash)return alert("PIN HRD salah.");el("adminLoginPin").value="";renderAdmin();show("adminScreen")}catch(e){alert(e.message)}
+ const email=el("adminEmail").value.trim();
+ const password=el("adminPassword").value;
+
+ if(!email || !password){
+  return alert("Masukkan email dan password HRD.");
+ }
+
+ try{
+  const credential=await firebaseAuth.signInWithEmailAndPassword(email,password);
+  const uid=credential.user.uid;
+
+  const profile=await firebaseDB.collection("pengguna").doc(uid).get();
+
+  if(!profile.exists ||
+     profile.data().role !== "hrd" ||
+     profile.data().active !== true){
+    await firebaseAuth.signOut();
+    return alert("Akun ini belum terdaftar sebagai HRD aktif. Periksa profil HRD di Firestore.");
+  }
+
+  el("adminPassword").value="";
+  renderAdmin();
+  show("adminScreen");
+
+ }catch(e){
+  console.error("Login HRD:",e);
+  alert("Login HRD gagal: "+e.message);
+ }
 }
 function logout(){stopScan();currentEmployee=null;scannedEmployee=null;show("loginScreen")}
 function renderAdmin(){
