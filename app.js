@@ -220,7 +220,7 @@ async function loadAdminCloud() {
 
 function setupAdmin() {
   portalNotify(
-    "Pembuatan akun HRD sekarang menggunakan Firebase. " +
+    "Pembuatan akun HRD memerlukan akses administrator. " +
     "Silakan pilih DAFTAR AKUN HRD."
   );
   show("registerScreen");
@@ -258,10 +258,11 @@ async function adminLogin() {
     renderAdmin();
     show("adminScreen");
     adminNavInit();
+    portalNotify("Login berhasil. Selamat datang di Dashboard HRD.", "success");
 
   } catch (e) {
     console.error("LOGIN HRD:", e);
-    portalNotify("Login HRD gagal: " + (e.code || "") + " " + e.message);
+    portalNotify("Email atau password HRD tidak sesuai. Silakan periksa kembali.");
   }
 }
 
@@ -416,7 +417,7 @@ async function addEmployee() {
   const existing = await employeeRef.get();
 
   if (existing.exists) {
-    return portalNotify("ID karyawan sudah terdaftar di Firebase.");
+    return portalNotify("ID karyawan sudah terdaftar. Gunakan ID yang berbeda.");
   }
 
   let newUser = null;
@@ -514,7 +515,7 @@ async function addEmployee() {
 function showEmployeeQr(i) {
   const e = db.employees[i];
   if (!e || !e.uid) {
-    return portalNotify("Karyawan ini belum memiliki akun Firebase.");
+    return portalNotify("Karyawan ini belum memiliki akun akses. Silakan buat akun terlebih dahulu.");
   }
 
   el("qrEmployee" + i).innerHTML = `
@@ -529,7 +530,7 @@ function showEmployeeQr(i) {
 async function toggleEmployee(i) {
   const e = db.employees[i];
   if (!e || !e.uid) {
-    return portalNotify("Akun Firebase karyawan tidak ditemukan.");
+    return portalNotify("Akun karyawan tidak ditemukan. Periksa kembali data karyawan.");
   }
 
   const active = e.active === false;
@@ -710,10 +711,11 @@ async function employeeLogin() {
     renderEmployee();
     show("employeeScreen");
     employeeNavGo("dashboard");
+    portalNotify("Login berhasil. Selamat datang di Portal Karyawan.", "success");
 
   } catch (e) {
     console.error("LOGIN KARYAWAN:", e);
-    portalNotify("Login karyawan gagal: " + (e.code || "") + " " + e.message);
+    portalNotify("ID karyawan atau password tidak sesuai. Silakan coba kembali.");
   }
 }
 
@@ -881,11 +883,11 @@ async function markAttendance(type) {
 
     save();
     renderEmployee();
-    portalNotify("Absensi " + type + " berhasil disimpan ke Firebase.");
+    portalNotify(type === "Masuk" ? "Absensi masuk berhasil dicatat. Selamat bekerja!" : "Absensi pulang berhasil dicatat. Hati-hati di perjalanan!");
 
   } catch (err) {
     console.error(err);
-    portalNotify("Absensi gagal: " + (err.code || "") + " " + err.message);
+    portalNotify("Absensi belum berhasil diproses. Periksa koneksi internet dan coba kembali.");
   }
 }
 
@@ -931,10 +933,10 @@ async function submitLeave() {
     save();
     el("leaveReason").value = "";
     renderEmployee();
-    portalNotify("Pengajuan berhasil dikirim ke Firebase.");
+    portalNotify("Pengajuan izin berhasil disampaikan kepada HRD. Silakan tunggu konfirmasi.");
 
   } catch (err) {
-    portalNotify("Pengajuan gagal: " + (err.code || "") + " " + err.message);
+    portalNotify("Pengajuan belum berhasil diproses. Silakan coba kembali.");
   }
 }
 
@@ -951,7 +953,7 @@ async function updateLeave(id, status) {
     renderAdmin();
 
   } catch (e) {
-    portalNotify("Gagal memperbarui pengajuan: " + e.message);
+    portalNotify("Status pengajuan belum berhasil diperbarui. Silakan coba kembali.");
   }
 }
 
@@ -985,7 +987,7 @@ async function importBackup() {
 
     if (!confirm(
       "Impor akan mengganti data lokal perangkat ini. " +
-      "Data Firebase tidak dihapus. Lanjutkan?"
+      "Data yang tersimpan di server tidak akan dihapus. Lanjutkan?"
     )) return;
 
     db = obj;
