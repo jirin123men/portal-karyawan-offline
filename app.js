@@ -618,6 +618,7 @@ async function employeeLogin() {
     await loadEmployeeCloud();
     renderEmployee();
     show("employeeScreen");
+    employeeNavGo("dashboard");
 
   } catch (e) {
     console.error("LOGIN KARYAWAN:", e);
@@ -700,6 +701,39 @@ function renderEmployee() {
         • Pulang ${safe(x.pulang || "-")}
       </div>`).join("")
     : "<p class='muted'>Belum ada riwayat absensi.</p>";
+}
+
+
+function employeeNavGo(view) {
+  const views = {
+    dashboard: "employeeDashboard",
+    absensi: "employeeAbsensi",
+    izin: "employeeIzin",
+    riwayat: "employeeRiwayat"
+  };
+
+  Object.values(views).forEach(id => {
+    const section = el(id);
+    if (section) section.classList.add("hidden");
+  });
+
+  if (views[view]) {
+    el(views[view]).classList.remove("hidden");
+  }
+
+  document.querySelectorAll(".employee-nav-btn").forEach(btn => {
+    btn.classList.remove("active");
+  });
+
+  const buttons = {
+    dashboard: 0,
+    absensi: 1,
+    izin: 2,
+    riwayat: 3
+  };
+
+  const activeButton = document.querySelectorAll(".employee-nav-btn")[buttons[view]];
+  if (activeButton) activeButton.classList.add("active");
 }
 
 async function markAttendance(type) {

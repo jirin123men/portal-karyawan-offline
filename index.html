@@ -174,36 +174,93 @@ hr{border:0;border-top:1px solid #edf0f5;margin:15px 0}
 </section>
 
 <section id="employeeScreen" class="hidden">
-<div class="card">
-<h3 id="employeeWelcome">Portal Karyawan</h3>
-<p id="employeeProfile" class="muted"></p>
-<div class="grid">
-<div class="stat"><strong id="myAttendance">0</strong><span>Absensi saya</span></div>
-<div class="stat"><strong id="myLeaves">0</strong><span>Pengajuan saya</span></div>
+
+<div class="employee-page">
+
+  <div class="employee-view" id="employeeDashboard">
+    <div class="card employee-welcome">
+      <div class="employee-heading">PORTAL KARYAWAN</div>
+      <h3 id="employeeWelcome">Halo, Karyawan</h3>
+      <p id="employeeProfile" class="muted"></p>
+      <div class="grid">
+        <div class="stat">
+          <strong id="myAttendance">0</strong>
+          <span>Absensi saya</span>
+        </div>
+        <div class="stat">
+          <strong id="myLeaves">0</strong>
+          <span>Pengajuan saya</span>
+        </div>
+      </div>
+      <button class="full secondary" onclick="logout()">KELUAR</button>
+    </div>
+  </div>
+
+  <div class="employee-view hidden" id="employeeAbsensi">
+    <div class="card">
+      <h3>Absensi Hari Ini</h3>
+      <p id="todayAttendance" class="muted">Belum ada absensi hari ini.</p>
+      <button class="full green" onclick="markAttendance('Masuk')">
+        ABSEN MASUK
+      </button>
+      <button class="full secondary" onclick="markAttendance('Pulang')">
+        ABSEN PULANG
+      </button>
+    </div>
+  </div>
+
+  <div class="employee-view hidden" id="employeeIzin">
+    <div class="card">
+      <h3>Pengajuan Sakit / Izin</h3>
+      <label>Jenis pengajuan</label>
+      <select id="leaveType">
+        <option>Izin</option>
+        <option>Sakit</option>
+        <option>Cuti</option>
+      </select>
+
+      <label>Tanggal mulai</label>
+      <input id="leaveStart" type="date">
+
+      <label>Tanggal selesai</label>
+      <input id="leaveEnd" type="date">
+
+      <label>Alasan</label>
+      <textarea id="leaveReason" placeholder="Tuliskan alasan pengajuan"></textarea>
+
+      <button class="full" onclick="submitLeave()">KIRIM PENGAJUAN</button>
+    </div>
+
+    <div class="card">
+      <h3>Riwayat Pengajuan</h3>
+      <div id="myLeaveList"></div>
+    </div>
+  </div>
+
+  <div class="employee-view hidden" id="employeeRiwayat">
+    <div class="card">
+      <h3>Riwayat Absensi</h3>
+      <div id="myAttendanceList"></div>
+    </div>
+  </div>
+
 </div>
-<button class="full secondary" onclick="logout()">KELUAR</button>
-</div>
-<div class="card">
-<h3>Absensi Hari Ini</h3>
-<p id="todayAttendance" class="muted">Belum ada absensi hari ini.</p>
-<button class="full green" onclick="markAttendance('Masuk')">ABSEN MASUK</button>
-<button class="full secondary" onclick="markAttendance('Pulang')">ABSEN PULANG</button>
-</div>
-<div class="card">
-<h3>Pengajuan Izin / Cuti / Sakit</h3>
-<label>Jenis pengajuan</label>
-<select id="leaveType"><option>Izin</option><option>Cuti</option><option>Sakit</option></select>
-<label>Tanggal mulai</label><input id="leaveStart" type="date">
-<label>Tanggal selesai</label><input id="leaveEnd" type="date">
-<label>Alasan</label><textarea id="leaveReason" placeholder="Tuliskan alasan"></textarea>
-<button class="full" onclick="submitLeave()">KIRIM PENGAJUAN</button>
-</div>
-<div class="card">
-<h3>Riwayat Pengajuan</h3><div id="myLeaveList"></div>
-</div>
-<div class="card">
-<h3>Riwayat Absensi</h3><div id="myAttendanceList"></div>
-</div>
+
+<nav id="employeeBottomNav">
+  <button class="employee-nav-btn active" onclick="employeeNavGo('dashboard')">
+    <span>⌂</span><small>Dashboard</small>
+  </button>
+  <button class="employee-nav-btn" onclick="employeeNavGo('absensi')">
+    <span>◷</span><small>Absensi</small>
+  </button>
+  <button class="employee-nav-btn" onclick="employeeNavGo('izin')">
+    <span>＋</span><small>Sakit/Izin</small>
+  </button>
+  <button class="employee-nav-btn" onclick="employeeNavGo('riwayat')">
+    <span>▤</span><small>Riwayat</small>
+  </button>
+</nav>
+
 </section>
 
 </main>

@@ -600,3 +600,78 @@ hr {
 #adminScreen .admin-section-hidden {
   display: none !important;
 }
+
+/* EMPLOYEE BOTTOM NAVIGATION */
+#employeeScreen {
+  padding-bottom: 90px;
+}
+
+#employeeBottomNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  padding: 9px 8px calc(9px + env(safe-area-inset-bottom));
+  background: var(--card, #ffffff);
+  border-top: 1px solid rgba(120, 130, 150, .2);
+  box-shadow: 0 -4px 18px rgba(0, 0, 0, .08);
+}
+
+.employee-nav-btn {
+  border: 0;
+  background: transparent;
+  color: #7b8494;
+  border-radius: 12px;
+  padding: 7px 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.employee-nav-btn span {
+  font-size: 23px;
+  line-height: 1.1;
+}
+
+.employee-nav-btn small {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.employee-nav-btn.active {
+  color: #2563eb;
+  background: rgba(37, 99, 235, .09);
+}
+
+.employee-welcome {
+  border-radius: 18px;
+}
+
+.employee-heading {
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  margin-bottom: 8px;
+}
+
+.employee-view .card {
+  margin-bottom: 15px;
+}
+
+@media (min-width: 700px) {
+  #employeeBottomNav {
+    left: 50%;
+    right: auto;
+    width: min(100%, 700px);
+    transform: translateX(-50%);
+    border-radius: 16px 16px 0 0;
+  }
+}
