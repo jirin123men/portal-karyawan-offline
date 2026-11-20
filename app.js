@@ -1,3 +1,70 @@
+
+function portalNotify(message, type) {
+  const msg = String(message || "");
+  if (!type) {
+    if (/gagal|error|tidak ditemukan|tidak sesuai|tidak aktif/i.test(msg)) {
+      type = "error";
+    } else if (/wajib|lengkapi|terlebih dahulu|minimal|tidak boleh|masukkan|pilih/i.test(msg)) {
+      type = "warning";
+    } else if (/berhasil|sukses/i.test(msg)) {
+      type = "success";
+    } else {
+      type = "info";
+    }
+  }
+
+  let container = document.getElementById("portalToastContainer");
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "portalToastContainer";
+    container.setAttribute("aria-live", "polite");
+    document.body.appendChild(container);
+  }
+
+  const config = {
+    success: { icon: "✓", title: "Berhasil" },
+    error: { icon: "✕", title: "Terjadi Kesalahan" },
+    warning: { icon: "!", title: "Perhatian" },
+    info: { icon: "ℹ", title: "Informasi" }
+  };
+
+  const item = config[type] || config.info;
+  const toast = document.createElement("div");
+  toast.className = "portal-toast portal-toast-" + type;
+
+  const icon = document.createElement("div");
+  icon.className = "portal-toast-icon";
+  icon.textContent = item.icon;
+
+  const content = document.createElement("div");
+  content.className = "portal-toast-content";
+
+  const heading = document.createElement("strong");
+  heading.textContent = item.title;
+
+  const description = document.createElement("span");
+  description.textContent = msg;
+
+  content.append(heading, description);
+
+  const close = document.createElement("button");
+  close.className = "portal-toast-close";
+  close.type = "button";
+  close.textContent = "×";
+  close.setAttribute("aria-label", "Tutup");
+  close.onclick = () => toast.remove();
+
+  toast.append(icon, content, close);
+  container.appendChild(toast);
+
+  requestAnimationFrame(() => toast.classList.add("show"));
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 300);
+  }, 5000);
+}
+
 "use strict";
 
 const DBKEY = "portalKaryawanOffline_v2";
@@ -128,7 +195,7 @@ async function loadAdminCloud() {
 }
 
 function setupAdmin() {
-  alert(
+  portalNotify(
     "Pembuatan akun HRD sekarang menggunakan Firebase. " +
     "Silakan pilih DAFTAR AKUN HRD."
   );
@@ -140,7 +207,7 @@ async function adminLogin() {
   const password = el("adminPassword").value;
 
   if (!email || !password) {
-    return alert("Masukkan email dan password HRD.");
+    return portalNotify("Masukkan email dan password HRD.");
   }
 
   try {
@@ -155,7 +222,7 @@ async function adminLogin() {
         data.role !== "hrd" ||
         data.active !== true) {
       await firebaseAuth.signOut();
-      return alert(
+      return portalNotify(
         "Akun belum memiliki akses HRD.\n" +
         "Pastikan dokumen users/" + uid +
         " memiliki role: hrd dan active: true."
@@ -170,7 +237,7 @@ async function adminLogin() {
 
   } catch (e) {
     console.error("LOGIN HRD:", e);
-    alert("Login HRD gagal: " + (e.code || "") + " " + e.message);
+    portalNotify("Login HRD gagal: " + (e.code || "") + " " + e.message);
   }
 }
 
@@ -181,13 +248,13 @@ async function registerHrd() {
   const confirm = el("registerConfirm").value;
 
   if (!name || !email || !password || !confirm) {
-    return alert("Semua kolom wajib diisi.");
+    return portalNotify("Semua kolom wajib diisi.");
   }
   if (password.length < 6) {
-    return alert("Password minimal 6 karakter.");
+    return portalNotify("Password minimal 6 karakter.");
   }
   if (password !== confirm) {
-    return alert("Konfirmasi password tidak sama.");
+    return portalNotify("Konfirmasi password tidak sama.");
   }
 
   try {
@@ -202,7 +269,7 @@ async function registerHrd() {
     ["registerName", "registerEmail", "registerPassword",
      "registerConfirm"].forEach(id => el(id).value = "");
 
-    alert(
+    portalNotify(
       "Pendaftaran berhasil.\nUID: " + uid +
       "\n\nAkun belum memiliki akses HRD. " +
       "Admin harus memberikan profil HRD di Firestore."
@@ -211,7 +278,7 @@ async function registerHrd() {
 
   } catch (e) {
     console.error(e);
-    alert("Pendaftaran gagal: " + (e.code || "") + " " + e.message);
+    portalNotify("Pendaftaran gagal: " + (e.code || "") + " " + e.message);
   }
 }
 
@@ -305,27 +372,27 @@ async function addEmployee() {
   const password = el("newEmployeePassword").value;
 
   if (!id || !nama || !password) {
-    return alert("ID, nama, dan password awal wajib diisi.");
+    return portalNotify("ID, nama, dan password awal wajib diisi.");
   }
 
   if (!/^[A-Za-z0-9]+$/.test(id)) {
-    return alert("ID karyawan hanya boleh huruf dan angka.");
+    return portalNotify("ID karyawan hanya boleh huruf dan angka.");
   }
 
   if (password.length < 6) {
-    return alert("Password awal minimal 6 karakter.");
+    return portalNotify("Password awal minimal 6 karakter.");
   }
 
   if (db.employees.some(x =>
       x.id.toLowerCase() === id.toLowerCase())) {
-    return alert("ID karyawan sudah digunakan.");
+    return portalNotify("ID karyawan sudah digunakan.");
   }
 
   const employeeRef = firebaseDB.collection("karyawan").doc(id);
   const existing = await employeeRef.get();
 
   if (existing.exists) {
-    return alert("ID karyawan sudah terdaftar di Firebase.");
+    return portalNotify("ID karyawan sudah terdaftar di Firebase.");
   }
 
   let newUser = null;
@@ -391,7 +458,7 @@ async function addEmployee() {
         </button>
       </div>`;
 
-    alert("Akun karyawan berhasil dibuat.");
+    portalNotify("Akun karyawan berhasil dibuat.");
 
   } catch (e) {
     console.error("BUAT KARYAWAN:", e);
@@ -404,7 +471,7 @@ async function addEmployee() {
       }
     }
 
-    alert(
+    portalNotify(
       "Gagal membuat akun karyawan: " +
       (e.code || "") + " " + e.message
     );
@@ -423,7 +490,7 @@ async function addEmployee() {
 function showEmployeeQr(i) {
   const e = db.employees[i];
   if (!e || !e.uid) {
-    return alert("Karyawan ini belum memiliki akun Firebase.");
+    return portalNotify("Karyawan ini belum memiliki akun Firebase.");
   }
 
   el("qrEmployee" + i).innerHTML = `
@@ -438,7 +505,7 @@ function showEmployeeQr(i) {
 async function toggleEmployee(i) {
   const e = db.employees[i];
   if (!e || !e.uid) {
-    return alert("Akun Firebase karyawan tidak ditemukan.");
+    return portalNotify("Akun Firebase karyawan tidak ditemukan.");
   }
 
   const active = e.active === false;
@@ -463,13 +530,13 @@ async function toggleEmployee(i) {
     renderAdmin();
 
   } catch (err) {
-    alert("Gagal mengubah status: " + err.message);
+    portalNotify("Gagal mengubah status: " + err.message);
   }
 }
 
 function startScan() {
   if (!navigator.mediaDevices?.getUserMedia) {
-    return alert("Kamera memerlukan browser HTTPS atau localhost.");
+    return portalNotify("Kamera memerlukan browser HTTPS atau localhost.");
   }
 
   const video = el("camera");
@@ -529,7 +596,7 @@ function startScan() {
 
   }).catch(e => {
     stopScan();
-    alert("Kamera gagal dibuka: " + e.message);
+    portalNotify("Kamera gagal dibuka: " + e.message);
   });
 }
 
@@ -559,18 +626,18 @@ function handleScanned(obj) {
 
 async function employeeLogin() {
   if (!scannedEmployee) {
-    return alert("Silakan scan QR karyawan terlebih dahulu.");
+    return portalNotify("Silakan scan QR karyawan terlebih dahulu.");
   }
 
   const id = el("employeeIdLogin").value.trim();
   const password = el("employeePassword").value;
 
   if (id !== scannedEmployee.employeeId) {
-    return alert("ID tidak sesuai dengan QR.");
+    return portalNotify("ID tidak sesuai dengan QR.");
   }
 
   if (!password) {
-    return alert("Masukkan password karyawan.");
+    return portalNotify("Masukkan password karyawan.");
   }
 
   try {
@@ -582,7 +649,7 @@ async function employeeLogin() {
 
     if (uid !== scannedEmployee.uid) {
       await firebaseAuth.signOut();
-      return alert("QR tidak cocok dengan akun yang login.");
+      return portalNotify("QR tidak cocok dengan akun yang login.");
     }
 
     const profile = await firebaseDB.collection("users")
@@ -593,7 +660,7 @@ async function employeeLogin() {
         profile.data().active !== true ||
         profile.data().employeeId !== id) {
       await firebaseAuth.signOut();
-      return alert("Akun karyawan tidak aktif atau profil tidak valid.");
+      return portalNotify("Akun karyawan tidak aktif atau profil tidak valid.");
     }
 
     const employeeDoc = await firebaseDB.collection("karyawan")
@@ -603,7 +670,7 @@ async function employeeLogin() {
         employeeDoc.data().uid !== uid ||
         employeeDoc.data().active !== true) {
       await firebaseAuth.signOut();
-      return alert("Data karyawan tidak ditemukan atau dinonaktifkan.");
+      return portalNotify("Data karyawan tidak ditemukan atau dinonaktifkan.");
     }
 
     currentEmployee = {
@@ -622,7 +689,7 @@ async function employeeLogin() {
 
   } catch (e) {
     console.error("LOGIN KARYAWAN:", e);
-    alert("Login karyawan gagal: " + (e.code || "") + " " + e.message);
+    portalNotify("Login karyawan gagal: " + (e.code || "") + " " + e.message);
   }
 }
 
@@ -749,7 +816,7 @@ async function markAttendance(type) {
 
     if (!snap.exists) {
       if (type !== "Masuk") {
-        return alert("Absen masuk terlebih dahulu.");
+        return portalNotify("Absen masuk terlebih dahulu.");
       }
 
       row = {
@@ -766,15 +833,15 @@ async function markAttendance(type) {
       row = snap.data();
 
       if (type === "Masuk") {
-        return alert("Absensi masuk hari ini sudah tercatat.");
+        return portalNotify("Absensi masuk hari ini sudah tercatat.");
       }
 
       if (!row.masuk) {
-        return alert("Absen masuk terlebih dahulu.");
+        return portalNotify("Absen masuk terlebih dahulu.");
       }
 
       if (row.pulang) {
-        return alert("Absensi pulang sudah tercatat.");
+        return portalNotify("Absensi pulang sudah tercatat.");
       }
 
       row.pulang = timeNow();
@@ -790,11 +857,11 @@ async function markAttendance(type) {
 
     save();
     renderEmployee();
-    alert("Absensi " + type + " berhasil disimpan ke Firebase.");
+    portalNotify("Absensi " + type + " berhasil disimpan ke Firebase.");
 
   } catch (err) {
     console.error(err);
-    alert("Absensi gagal: " + (err.code || "") + " " + err.message);
+    portalNotify("Absensi gagal: " + (err.code || "") + " " + err.message);
   }
 }
 
@@ -808,11 +875,11 @@ async function submitLeave() {
   const alasan = el("leaveReason").value.trim();
 
   if (!mulai || !selesai || !alasan) {
-    return alert("Lengkapi semua data pengajuan.");
+    return portalNotify("Lengkapi semua data pengajuan.");
   }
 
   if (selesai < mulai) {
-    return alert("Tanggal selesai tidak boleh sebelum tanggal mulai.");
+    return portalNotify("Tanggal selesai tidak boleh sebelum tanggal mulai.");
   }
 
   try {
@@ -840,10 +907,10 @@ async function submitLeave() {
     save();
     el("leaveReason").value = "";
     renderEmployee();
-    alert("Pengajuan berhasil dikirim ke Firebase.");
+    portalNotify("Pengajuan berhasil dikirim ke Firebase.");
 
   } catch (err) {
-    alert("Pengajuan gagal: " + (err.code || "") + " " + err.message);
+    portalNotify("Pengajuan gagal: " + (err.code || "") + " " + err.message);
   }
 }
 
@@ -860,7 +927,7 @@ async function updateLeave(id, status) {
     renderAdmin();
 
   } catch (e) {
-    alert("Gagal memperbarui pengajuan: " + e.message);
+    portalNotify("Gagal memperbarui pengajuan: " + e.message);
   }
 }
 
@@ -880,7 +947,7 @@ function exportBackup() {
 
 async function importBackup() {
   const f = el("backupFile").files[0];
-  if (!f) return alert("Pilih file backup JSON.");
+  if (!f) return portalNotify("Pilih file backup JSON.");
 
   try {
     const obj = JSON.parse(await f.text());
@@ -899,11 +966,11 @@ async function importBackup() {
 
     db = obj;
     save();
-    alert("Backup lokal berhasil dipulihkan.");
+    portalNotify("Backup lokal berhasil dipulihkan.");
     renderAdmin();
 
   } catch (e) {
-    alert("Gagal impor: " + e.message);
+    portalNotify("Gagal impor: " + e.message);
   }
 }
 
