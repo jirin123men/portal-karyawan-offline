@@ -1,8 +1,9 @@
-const CACHE = "portal-karyawan-offline-v9-firebase";
+const CACHE = "portal-karyawan-offline-v10-theme";
 
 const FILES = [
   "./",
   "./index.html",
+  "./theme.css",
   "./app.js",
   "./firebase-config.js",
   "./firebase-init.js",
