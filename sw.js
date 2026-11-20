@@ -1,4 +1,4 @@
-const CACHE = "portal-karyawan-offline-v10-theme";
+const CACHE = "portal-karyawan-offline-v11-premium";
 
 const FILES = [
   "./",

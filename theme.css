@@ -1,135 +1,167 @@
 :root {
   --blue: #0756a5;
-  --blue-dark: #063b78;
+  --blue-dark: #07366f;
   --blue-light: #eaf3ff;
   --bg: #f3f6fb;
   --text: #172b4d;
-  --muted: #718096;
+  --muted: #77869b;
   --white: #ffffff;
-  --border: #e5ebf3;
+  --border: #e8edf5;
   --green: #15966a;
+  --shadow: 0 8px 26px rgba(20, 54, 100, .07);
 }
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
+  padding-bottom: 35px;
   background: var(--bg);
   color: var(--text);
-  font-family: "Arial", sans-serif;
-  padding-bottom: 25px;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 header {
-  background: linear-gradient(135deg, #06458e, #0879d1);
-  color: white;
-  padding: 30px 22px 45px;
-  border-radius: 0 0 28px 28px;
-  box-shadow: 0 8px 24px #06458e30;
   position: relative;
   overflow: hidden;
+  padding: 29px 22px 48px;
+  color: white;
+  background: linear-gradient(135deg, #063b78 0%, #0756a5 55%, #1684d8 100%);
+  border-radius: 0 0 30px 30px;
+  box-shadow: 0 10px 30px rgba(5, 65, 130, .18);
 }
 
+header::before,
 header::after {
   content: "";
   position: absolute;
-  width: 180px;
-  height: 180px;
-  border: 28px solid #ffffff12;
+  border: 1px solid rgba(255,255,255,.12);
   border-radius: 50%;
-  right: -65px;
-  top: -75px;
+  pointer-events: none;
+}
+
+header::before {
+  width: 220px;
+  height: 220px;
+  right: -85px;
+  top: -120px;
+}
+
+header::after {
+  width: 145px;
+  height: 145px;
+  right: 35px;
+  top: -95px;
 }
 
 header h2 {
   position: relative;
   z-index: 1;
+  margin: 0 0 7px;
   font-size: 23px;
   font-weight: 800;
-  letter-spacing: .2px;
+  letter-spacing: -.5px;
 }
 
 header p {
   position: relative;
   z-index: 1;
+  margin: 0;
+  color: #d8eaff;
   font-size: 12px;
-  color: #d9eaff;
+  letter-spacing: .2px;
 }
 
 main {
-  max-width: 680px;
-  margin: -20px auto 0;
-  padding: 0 15px 35px;
   position: relative;
   z-index: 2;
+  width: 100%;
+  max-width: 720px;
+  margin: -23px auto 0;
+  padding: 0 16px 40px;
 }
 
 .card {
+  margin-bottom: 16px;
+  padding: 21px;
   background: var(--white);
-  border: 1px solid #edf1f7;
-  border-radius: 20px;
-  padding: 19px;
-  margin-bottom: 15px;
-  box-shadow: 0 5px 20px #17365d0b;
+  border: 1px solid rgba(225, 233, 244, .9);
+  border-radius: 21px;
+  box-shadow: var(--shadow);
 }
 
 .card h3 {
+  margin: 0 0 16px;
   color: var(--blue-dark);
   font-size: 16px;
   font-weight: 800;
-  margin: 0 0 15px;
+  letter-spacing: -.2px;
 }
 
 .card h4 {
+  margin: 13px 0 9px;
   color: var(--blue-dark);
+  font-size: 14px;
 }
 
 label {
-  color: #52647d;
+  display: block;
+  margin: 15px 0 7px;
+  color: #536781;
   font-size: 12px;
   font-weight: 700;
-  margin: 14px 0 7px;
 }
 
 input,
 select,
 textarea {
+  display: block;
   width: 100%;
-  min-height: 47px;
+  min-height: 48px;
   padding: 13px 14px;
-  border: 1px solid #dce5f0;
-  border-radius: 12px;
-  background: #fbfdff;
   color: var(--text);
-  font-size: 14px;
+  background: #f9fbfe;
+  border: 1px solid #dfe7f1;
+  border-radius: 13px;
   outline: none;
-  transition: .2s;
+  font-family: inherit;
+  font-size: 14px;
+  transition: .2s ease;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-  border-color: #1681d5;
-  box-shadow: 0 0 0 3px #1681d51c;
   background: white;
+  border-color: #1681d5;
+  box-shadow: 0 0 0 3px rgba(22,129,213,.12);
 }
 
 textarea {
-  min-height: 90px;
+  min-height: 95px;
+  resize: vertical;
 }
 
 button {
-  border: none;
-  border-radius: 12px;
-  padding: 13px 16px;
-  background: linear-gradient(135deg, #0877cb, #0753a0);
+  min-height: 43px;
+  padding: 12px 16px;
   color: white;
-  font-size: 13px;
+  background: linear-gradient(135deg, #0879cf, #0753a0);
+  border: 0;
+  border-radius: 13px;
+  box-shadow: 0 5px 13px rgba(7, 86, 165, .17);
+  font-family: inherit;
+  font-size: 12px;
   font-weight: 800;
-  letter-spacing: .2px;
-  box-shadow: 0 4px 10px #0756a526;
+  letter-spacing: .25px;
+  cursor: pointer;
   transition: transform .15s, opacity .15s;
 }
 
@@ -138,57 +170,64 @@ button:active {
   opacity: .9;
 }
 
+button.full {
+  display: block;
+  width: 100%;
+  min-height: 47px;
+  margin-top: 12px;
+}
+
 button.secondary {
-  background: #eaf3ff;
   color: #0756a5;
+  background: #eaf3ff;
   box-shadow: none;
 }
 
 button.green {
-  background: linear-gradient(135deg, #18a879, #087d58);
-  box-shadow: 0 4px 10px #15966a25;
+  color: white;
+  background: linear-gradient(135deg, #16a879, #087c59);
+  box-shadow: 0 5px 13px rgba(21,150,106,.15);
 }
 
 button.danger {
+  color: white;
   background: #c83b4b;
   box-shadow: none;
 }
 
-button.full {
-  width: 100%;
-  min-height: 46px;
-  margin-top: 11px;
-}
-
 button.smallbtn {
-  padding: 9px 11px;
-  font-size: 11px;
+  min-height: 34px;
   margin: 3px;
+  padding: 8px 11px;
+  border-radius: 10px;
+  font-size: 11px;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 11px;
+  gap: 12px;
 }
 
 .stat {
-  background: linear-gradient(145deg, #f0f6ff, #e4efff);
-  border: 1px solid #dfebfb;
-  border-radius: 15px;
-  padding: 17px 14px;
+  min-width: 0;
+  padding: 17px 15px;
+  background: linear-gradient(145deg, #f1f7ff, #e5f0ff);
+  border: 1px solid #e0ebfa;
+  border-radius: 17px;
 }
 
 .stat strong {
   display: block;
+  margin-bottom: 6px;
   color: #0756a5;
-  font-size: 27px;
-  font-weight: 800;
-  margin-bottom: 5px;
+  font-size: 29px;
+  font-weight: 850;
+  line-height: 1.1;
 }
 
 .stat span {
-  color: #64758c;
+  color: #667991;
   font-size: 11px;
   font-weight: 700;
 }
@@ -196,70 +235,71 @@ button.smallbtn {
 .muted {
   color: var(--muted);
   font-size: 13px;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 .small {
   color: var(--muted);
   font-size: 11px;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .item {
-  padding: 14px 0;
+  padding: 15px 0;
   border-bottom: 1px solid var(--border);
   font-size: 13px;
   line-height: 1.7;
 }
 
 .item:last-child {
-  border-bottom: none;
+  border-bottom: 0;
 }
 
 .status {
   display: inline-block;
   padding: 6px 11px;
-  border-radius: 30px;
-  background: #fff3d9;
   color: #966000;
+  background: #fff3d9;
+  border-radius: 30px;
   font-size: 11px;
   font-weight: 800;
 }
 
+.status.ok,
 .ok {
-  background: #dcf8eb;
   color: #087a4d;
+  background: #dcf8eb;
 }
 
 .no {
-  background: #ffe7e7;
   color: #b42332;
+  background: #ffe7e7;
 }
 
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 9px;
+  gap: 7px;
+  margin-top: 10px;
 }
 
 #camera {
   width: 100%;
-  background: #071426;
-  border-radius: 16px;
   max-height: 330px;
+  background: #071426;
+  border-radius: 17px;
   object-fit: cover;
 }
 
 .qrimg {
+  display: block;
   width: 190px;
   height: 190px;
-  display: block;
-  margin: 15px auto;
+  margin: 16px auto;
   padding: 10px;
-  border: 1px solid var(--border);
-  border-radius: 15px;
   background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
 }
 
 .center {
@@ -267,66 +307,166 @@ button.smallbtn {
 }
 
 hr {
+  margin: 18px 0;
   border: 0;
   border-top: 1px solid var(--border);
-  margin: 17px 0;
 }
 
 .hidden {
   display: none !important;
 }
 
-#loginScreen .card:first-child,
-#registerScreen .card,
-#setupScreen .card {
-  border-top: 4px solid #0877cb;
-}
-
-#employeeScreen .card:first-child,
-#adminScreen .card:first-child {
-  background: linear-gradient(145deg, #0756a5, #0879d1);
+/* Dashboard HRD dan karyawan */
+#adminScreen > .card:first-child,
+#employeeScreen > .card:first-child {
+  padding: 23px;
   color: white;
-  border: none;
+  background: linear-gradient(145deg, #063b78, #0879cf);
+  border: 0;
+  box-shadow: 0 10px 26px rgba(5, 65, 130, .17);
 }
 
-#employeeScreen .card:first-child h3,
-#adminScreen .card:first-child h3,
-#employeeScreen .card:first-child .muted,
-#adminScreen .card:first-child .muted {
+#adminScreen > .card:first-child h3,
+#employeeScreen > .card:first-child h3 {
   color: white;
+  font-size: 19px;
 }
 
-#employeeScreen .card:first-child .stat,
-#adminScreen .card:first-child .stat {
-  background: #ffffffed;
+#adminScreen > .card:first-child .muted,
+#employeeScreen > .card:first-child .muted {
+  color: #e0efff;
 }
 
-#employeeScreen .card:first-child button,
-#adminScreen .card:first-child button {
-  background: white;
+#adminScreen > .card:first-child .stat,
+#employeeScreen > .card:first-child .stat {
+  background: rgba(255,255,255,.97);
+  border: 0;
+}
+
+#adminScreen > .card:first-child button,
+#employeeScreen > .card:first-child button {
   color: #0756a5;
+  background: white;
   box-shadow: none;
 }
 
-#employeeScreen .card:nth-child(2) {
-  border-top: 3px solid #15966a;
+/* Kartu dashboard */
+#adminScreen > .card:not(:first-child),
+#employeeScreen > .card:not(:first-child) {
+  position: relative;
 }
 
-#employeeScreen .card:nth-child(2) button.green {
-  min-height: 50px;
+#adminScreen > .card:nth-child(2) {
+  border-top: 3px solid #1681d5;
 }
 
-@media (max-width: 380px) {
+#adminScreen > .card:nth-child(3) {
+  border-top: 3px solid #16a879;
+}
+
+#adminScreen > .card:nth-child(4),
+#adminScreen > .card:nth-child(5) {
+  border-top: 3px solid #d6a23c;
+}
+
+#adminScreen > .card:nth-child(6) {
+  border-top: 3px solid #7894b5;
+}
+
+#employeeScreen > .card:nth-child(2) {
+  border-top: 3px solid #16a879;
+}
+
+#employeeScreen > .card:nth-child(2) button.green {
+  min-height: 49px;
+}
+
+/* Login dan pendaftaran */
+#loginScreen .card,
+#registerScreen .card,
+#setupScreen .card {
+  padding: 23px;
+}
+
+#loginScreen .card:first-child,
+#registerScreen .card,
+#setupScreen .card {
+  border-top: 4px solid #0879cf;
+}
+
+#loginScreen .card:first-child button {
+  min-height: 49px;
+}
+
+/* Area hasil QR */
+#newQrResult {
+  text-align: center;
+}
+
+#newQrResult:empty {
+  display: none;
+}
+
+/* Responsif HP */
+@media (max-width: 480px) {
+  header {
+    padding: 26px 19px 43px;
+    border-radius: 0 0 25px 25px;
+  }
+
+  header h2 {
+    font-size: 21px;
+  }
+
   main {
-    padding-left: 11px;
-    padding-right: 11px;
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .card {
+    padding: 18px;
+    margin-bottom: 13px;
+    border-radius: 18px;
+  }
+
+  .card h3 {
+    font-size: 15px;
+  }
+
+  .stat {
+    padding: 15px 12px;
+  }
+
+  .stat strong {
+    font-size: 25px;
+  }
+
+  button {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 350px) {
+  .grid {
+    gap: 8px;
+  }
+
+  .stat strong {
+    font-size: 22px;
   }
 
   .card {
     padding: 15px;
   }
+}
 
-  .stat strong {
-    font-size: 23px;
+/* Tampilan laptop */
+@media (min-width: 900px) {
+  main {
+    max-width: 850px;
+  }
+
+  .card {
+    padding: 24px;
   }
 }
