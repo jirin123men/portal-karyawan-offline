@@ -1,0 +1,16 @@
+{
+  "name": "portal-ios",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "type": "commonjs",
+  "dependencies": {
+    "jsqr": "^1.4.0",
+    "qrcode": "^1.5.4",
+    "qrcode-generator": "^2.0.4"
+  }
+}

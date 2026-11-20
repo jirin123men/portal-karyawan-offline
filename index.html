@@ -80,7 +80,7 @@ hr{border:0;border-top:1px solid #edf0f5;margin:15px 0}
 </div>
 <div class="card">
 <h3>Portal Karyawan</h3>
-<p class="muted">Scan QR Code pada kartu karyawan untuk masuk atau aktivasi akun.</p>
+<p class="muted">Scan QR Code kartu karyawan, lalu login menggunakan ID dan password.</p>
 <button class="full green" onclick="startScan()">📷 SCAN QR KARYAWAN</button>
 <video id="camera" class="hidden" autoplay muted playsinline></video>
 <canvas id="scanCanvas" class="hidden"></canvas>
@@ -89,14 +89,12 @@ hr{border:0;border-top:1px solid #edf0f5;margin:15px 0}
 <hr>
 <h4 id="scanTitle">Login Karyawan</h4>
 <p id="scanInfo" class="muted"></p>
-<div id="activationFields" class="hidden">
-<label>PIN aktivasi dari HRD</label><input id="activationPin" type="password" inputmode="numeric">
-<label>Buat PIN pribadi (minimal 6 angka)</label><input id="newEmployeePin" type="password" inputmode="numeric">
-<label>Ulangi PIN pribadi</label><input id="repeatEmployeePin" type="password" inputmode="numeric">
-<button class="full green" onclick="activateEmployee()">AKTIFKAN AKUN</button>
-</div>
+
 <div id="employeeLoginFields" class="hidden">
-<label>PIN pribadi karyawan</label><input id="employeePin" type="password" inputmode="numeric">
+<label>ID Karyawan</label>
+<input id="employeeIdLogin" autocomplete="username" placeholder="Masukkan ID karyawan">
+<label>Password</label>
+<input id="employeePassword" type="password" autocomplete="current-password" placeholder="Masukkan password">
 <button class="full" onclick="employeeLogin()">MASUK PORTAL</button>
 </div>
 </div>
@@ -138,11 +136,17 @@ hr{border:0;border-top:1px solid #edf0f5;margin:15px 0}
 </div>
 <div class="card">
 <h3>Tambah Karyawan</h3>
-<label>ID Karyawan</label><input id="newId" placeholder="Contoh KRY001">
-<label>Nama lengkap</label><input id="newName" placeholder="Nama karyawan">
-<label>Jabatan</label><input id="newTitle" placeholder="Staff">
-<label>Divisi / Bagian</label><input id="newDivision" placeholder="Produksi">
-<button class="full" onclick="addEmployee()">BUAT KARYAWAN + QR CODE</button>
+<label>ID Karyawan</label>
+<input id="newId" placeholder="Contoh KRY001">
+<label>Nama lengkap</label>
+<input id="newName" placeholder="Nama karyawan">
+<label>Jabatan</label>
+<input id="newTitle" placeholder="Staff">
+<label>Divisi / Bagian</label>
+<input id="newDivision" placeholder="Produksi">
+<label>Password awal karyawan</label>
+<input id="newEmployeePassword" type="password" minlength="6" placeholder="Minimal 6 karakter">
+<button class="full" onclick="addEmployee()">BUAT AKUN KARYAWAN + QR CODE</button>
 <div id="newQrResult"></div>
 </div>
 <div class="card">
