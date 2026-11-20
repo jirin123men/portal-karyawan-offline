@@ -336,12 +336,14 @@ function renderAdmin() {
           ${e.active === false ? "Nonaktif" : "Aktif"}
         </span>
         <div class="actions">
-          <button class="smallbtn secondary"
-            onclick="showEmployeeQr(${i})">LIHAT QR</button>
-          <button class="smallbtn danger"
-            onclick="toggleEmployee(${i})">
+          <button class="smallbtn secondary" onclick="showEmployeeQr(${i})">QR</button>
+          <button class="smallbtn secondary" onclick="showEmployeeDetail(${i})">DETAIL</button>
+          <button class="smallbtn secondary" onclick="editEmployee(${i})">EDIT</button>
+          <button class="smallbtn secondary" onclick="printEmployeeCard(${i})">CETAK ID CARD</button>
+          <button class="smallbtn danger" onclick="toggleEmployee(${i})">
             ${e.active === false ? "Aktifkan" : "Nonaktifkan"}
           </button>
+          <button class="smallbtn danger" onclick="deleteEmployee(${i})">HAPUS</button>
         </div>
         <div id="qrEmployee${i}"></div>
       </div>
@@ -556,6 +558,217 @@ async function toggleEmployee(i) {
 
   } catch (err) {
     portalNotify("Gagal mengubah status: " + err.message);
+  }
+}
+
+
+
+// DETAIL KARYAWAN - KHUSUS TAMPILAN HRD
+function showEmployeeDetail(i) {
+  const e = db.employees[i];
+  if (!e) return;
+
+  const rows = [
+    ["ID Karyawan", e.id],
+    ["Nama lengkap", e.nama],
+    ["Jabatan", e.jabatan],
+    ["Divisi / Bagian", e.divisi],
+    ["Nomor HP", e.nomorHp],
+    ["Email kerja", e.emailKerja],
+    ["Tanggal masuk", e.tanggalMasuk],
+    ["Status kerja", e.statusKerja],
+    ["Lokasi kerja", e.lokasiKerja],
+    ["Status akun", e.active === false ? "Nonaktif" : "Aktif"]
+  ];
+
+  let modal = document.getElementById("employeeFeatureModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "employeeFeatureModal";
+    document.body.appendChild(modal);
+  }
+
+  modal.innerHTML = `
+    <div style="position:fixed;inset:0;background:#0009;z-index:99999;overflow:auto;padding:18px">
+      <div style="background:var(--card,#fff);color:var(--text, #222);max-width:600px;margin:25px auto;padding:22px;border-radius:16px">
+        <h2>Detail Karyawan</h2>
+        <div style="text-align:center;margin:18px">
+          <div style="font-size:42px">👤</div>
+          <h3>${safe(e.nama)}</h3>
+          <p>${safe(e.jabatan || "-")} • ${safe(e.divisi || "-")}</p>
+        </div>
+        ${rows.map(([label, value]) => `
+          <div style="padding:10px 0;border-bottom:1px solid #ddd">
+            <small style="opacity:.7">${safe(label)}</small>
+            <div><b>${safe(value || "-")}</b></div>
+          </div>
+        `).join("")}
+        <p style="font-size:12px;opacity:.7">
+          Data gaji, NIK, dan alamat pribadi akan ditambahkan pada bagian data HRD yang terlindungi.
+        </p>
+        <button class="full" onclick="document.getElementById('employeeFeatureModal').innerHTML=''">TUTUP</button>
+      </div>
+    </div>`;
+}
+
+// EDIT DATA KARYAWAN
+function editEmployee(i) {
+  const e = db.employees[i];
+  if (!e) return;
+
+  let modal = document.getElementById("employeeFeatureModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "employeeFeatureModal";
+    document.body.appendChild(modal);
+  }
+
+  modal.innerHTML = `
+    <div style="position:fixed;inset:0;background:#0009;z-index:99999;overflow:auto;padding:18px">
+      <div style="background:var(--card,#fff);color:var(--text,#222);max-width:600px;margin:25px auto;padding:22px;border-radius:16px">
+        <h2>Edit Data Karyawan</h2>
+        <label>ID Karyawan</label>
+        <input value="${safe(e.id)}" disabled>
+        <label>Nama lengkap</label>
+        <input id="editEmpNama" value="${safe(e.nama)}">
+        <label>Jabatan</label>
+        <input id="editEmpJabatan" value="${safe(e.jabatan)}">
+        <label>Divisi / Bagian</label>
+        <input id="editEmpDivisi" value="${safe(e.divisi)}">
+        <label>Nomor HP</label>
+        <input id="editEmpHp" value="${safe(e.nomorHp)}" placeholder="08xxxxxxxxxx">
+        <label>Email kerja</label>
+        <input id="editEmpEmail" type="email" value="${safe(e.emailKerja)}">
+        <label>Tanggal masuk</label>
+        <input id="editEmpTanggal" type="date" value="${safe(e.tanggalMasuk)}">
+        <label>Status kerja</label>
+        <select id="editEmpStatus">
+          <option value="Tetap">Tetap</option>
+          <option value="Kontrak">Kontrak</option>
+          <option value="Harian">Harian</option>
+          <option value="Magang">Magang</option>
+        </select>
+        <label>Lokasi kerja</label>
+        <input id="editEmpLokasi" value="${safe(e.lokasiKerja)}">
+        <div class="actions">
+          <button class="full" onclick="saveEmployeeEdit(${i})">SIMPAN PERUBAHAN</button>
+          <button class="secondary" onclick="document.getElementById('employeeFeatureModal').innerHTML=''">BATAL</button>
+        </div>
+      </div>
+    </div>`;
+
+  const status = document.getElementById("editEmpStatus");
+  if (status && e.statusKerja) status.value = e.statusKerja;
+}
+
+async function saveEmployeeEdit(i) {
+  const e = db.employees[i];
+  if (!e) return;
+
+  const nama = document.getElementById("editEmpNama").value.trim();
+  if (!nama) return portalNotify("Nama karyawan wajib diisi.");
+
+  const updates = {
+    nama,
+    jabatan: document.getElementById("editEmpJabatan").value.trim(),
+    divisi: document.getElementById("editEmpDivisi").value.trim(),
+    nomorHp: document.getElementById("editEmpHp").value.trim(),
+    emailKerja: document.getElementById("editEmpEmail").value.trim(),
+    tanggalMasuk: document.getElementById("editEmpTanggal").value,
+    statusKerja: document.getElementById("editEmpStatus").value,
+    lokasiKerja: document.getElementById("editEmpLokasi").value.trim()
+  };
+
+  try {
+    const batch = firebaseDB.batch();
+    batch.update(firebaseDB.collection("karyawan").doc(e.id), updates);
+
+    if (e.uid) {
+      batch.update(firebaseDB.collection("users").doc(e.uid), {
+        nama: nama
+      });
+    }
+
+    await batch.commit();
+    Object.assign(e, updates);
+    save();
+    renderAdmin();
+    document.getElementById("employeeFeatureModal").innerHTML = "";
+    portalNotify("Data karyawan berhasil diperbarui.", "success");
+  } catch (err) {
+    console.error("EDIT KARYAWAN:", err);
+    portalNotify("Data belum berhasil diperbarui. Periksa koneksi dan hak akses.");
+  }
+}
+
+// CETAK KARTU IDENTITAS
+function printEmployeeCard(i) {
+  const e = db.employees[i];
+  if (!e || !e.uid) return portalNotify("QR karyawan belum tersedia.");
+
+  const qr = makeQr(e.uid, e.id);
+  const win = window.open("", "_blank", "width=600,height=750");
+  if (!win) return portalNotify("Izinkan pop-up browser untuk mencetak ID Card.");
+
+  win.document.write(`
+    <!DOCTYPE html><html><head><title>ID Card ${safe(e.id)}</title>
+    <style>
+      body{font-family:Arial,sans-serif;display:flex;justify-content:center;padding:30px}
+      .card{width:340px;border:2px solid #183b65;border-radius:18px;text-align:center;overflow:hidden;padding-bottom:20px}
+      .head{background:#183b65;color:white;padding:18px;font-weight:bold}
+      .body{padding:20px}
+      .name{font-size:21px;font-weight:bold;margin:12px 0}
+      .qr{width:150px;height:150px}
+      .id{font-size:16px;font-weight:bold;margin:10px}
+      @media print{button{display:none}}
+    </style></head><body>
+      <div class="card">
+        <div class="head">KARTU IDENTITAS KARYAWAN</div>
+        <div class="body">
+          <div class="name">${safe(e.nama)}</div>
+          <div>${safe(e.jabatan || "-")}</div>
+          <div>${safe(e.divisi || "-")}</div>
+          <div class="id">ID: ${safe(e.id)}</div>
+          <img class="qr" src="${qr}">
+          <p>IDENTITAS RESMI KARYAWAN</p>
+        </div>
+      </div>
+      <script>window.onload=()=>window.print();<\/script>
+    </body></html>`);
+  win.document.close();
+}
+
+// HAPUS DARI DAFTAR DAN NONAKTIFKAN AKSES
+async function deleteEmployee(i) {
+  const e = db.employees[i];
+  if (!e) return;
+
+  const ok = confirm(
+    "Hapus " + e.nama + " dari daftar karyawan?\n\n" +
+    "Akses login akan dinonaktifkan. Riwayat absensi dan izin tetap disimpan.\n" +
+    "Akun Authentication tidak dihapus permanen oleh tindakan ini."
+  );
+  if (!ok) return;
+
+  if (!e.uid) {
+    return portalNotify("Akun karyawan tidak ditemukan. Hubungi administrator.");
+  }
+
+  try {
+    const batch = firebaseDB.batch();
+    batch.update(firebaseDB.collection("users").doc(e.uid), {
+      active: false
+    });
+    batch.delete(firebaseDB.collection("karyawan").doc(e.id));
+    await batch.commit();
+
+    db.employees = db.employees.filter(x => x.id !== e.id);
+    save();
+    renderAdmin();
+    portalNotify("Karyawan dihapus dari daftar dan akses login dinonaktifkan.", "success");
+  } catch (err) {
+    console.error("HAPUS KARYAWAN:", err);
+    portalNotify("Karyawan belum berhasil dihapus. Periksa hak akses HRD.");
   }
 }
 
