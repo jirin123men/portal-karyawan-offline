@@ -1,6 +1,7 @@
 
 function portalNotify(message, type) {
   const msg = String(message || "");
+
   if (!type) {
     if (/gagal|error|tidak ditemukan|tidak sesuai|tidak aktif/i.test(msg)) {
       type = "error";
@@ -13,24 +14,30 @@ function portalNotify(message, type) {
     }
   }
 
+  const settings = {
+    success: { icon: "✓", title: "Berhasil", label: "TRANSAKSI BERHASIL" },
+    error: { icon: "×", title: "Terjadi Kesalahan", label: "PROSES GAGAL" },
+    warning: { icon: "!", title: "Perlu Perhatian", label: "PERIKSA KEMBALI" },
+    info: { icon: "i", title: "Informasi", label: "PEMBERITAHUAN" }
+  };
+
+  const item = settings[type] || settings.info;
+
   let container = document.getElementById("portalToastContainer");
   if (!container) {
     container = document.createElement("div");
     container.id = "portalToastContainer";
     container.setAttribute("aria-live", "polite");
+    container.setAttribute("aria-atomic", "false");
     document.body.appendChild(container);
   }
 
-  const config = {
-    success: { icon: "✓", title: "Berhasil" },
-    error: { icon: "✕", title: "Terjadi Kesalahan" },
-    warning: { icon: "!", title: "Perhatian" },
-    info: { icon: "ℹ", title: "Informasi" }
-  };
-
-  const item = config[type] || config.info;
   const toast = document.createElement("div");
   toast.className = "portal-toast portal-toast-" + type;
+  toast.setAttribute("role", "status");
+
+  const accent = document.createElement("div");
+  accent.className = "portal-toast-accent";
 
   const icon = document.createElement("div");
   icon.className = "portal-toast-icon";
@@ -39,30 +46,47 @@ function portalNotify(message, type) {
   const content = document.createElement("div");
   content.className = "portal-toast-content";
 
+  const label = document.createElement("small");
+  label.className = "portal-toast-label";
+  label.textContent = item.label;
+
   const heading = document.createElement("strong");
   heading.textContent = item.title;
 
   const description = document.createElement("span");
   description.textContent = msg;
 
-  content.append(heading, description);
+  content.append(label, heading, description);
 
   const close = document.createElement("button");
   close.className = "portal-toast-close";
   close.type = "button";
   close.textContent = "×";
-  close.setAttribute("aria-label", "Tutup");
-  close.onclick = () => toast.remove();
+  close.setAttribute("aria-label", "Tutup notifikasi");
 
-  toast.append(icon, content, close);
+  const progress = document.createElement("div");
+  progress.className = "portal-toast-progress";
+
+  toast.append(accent, icon, content, close, progress);
   container.appendChild(toast);
+
+  let removed = false;
+  let timer;
+
+  function removeToast() {
+    if (removed) return;
+    removed = true;
+    clearTimeout(timer);
+    toast.classList.remove("show");
+    toast.classList.add("hide");
+    setTimeout(() => toast.remove(), 300);
+  }
+
+  close.addEventListener("click", removeToast);
 
   requestAnimationFrame(() => toast.classList.add("show"));
 
-  setTimeout(() => {
-    toast.classList.remove("show");
-    setTimeout(() => toast.remove(), 300);
-  }, 5000);
+  timer = setTimeout(removeToast, 5000);
 }
 
 "use strict";
