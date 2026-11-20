@@ -34,25 +34,25 @@ async function adminLogin(){
   const credential=await firebaseAuth.signInWithEmailAndPassword(email,password);
   const uid=credential.user.uid;
 
-  const profile=await firebaseDB.collection("pengguna").doc(uid).get();
+  const profile=await firebaseDB.collection("users").doc(uid).get();
   const data=profile.exists ? profile.data() : {};
 
   console.log("UID LOGIN:", uid);
   console.log("DOKUMEN HRD ADA:", profile.exists);
   console.log("DATA PROFIL HRD:", data);
-  console.log("PERAN:", JSON.stringify(data.peran));
-  console.log("AKTIF:", JSON.stringify(data.aktif));
+  console.log("PERAN:", JSON.stringify(data.role));
+  console.log("AKTIF:", JSON.stringify(data.active));
 
   if(!profile.exists ||
-     data.peran !== "hrd" ||
-     data.aktif !== true){
+     data.role !== "hrd" ||
+     data.active !== true){
     const detail =
       "PEMERIKSAAN PROFIL HRD\\n" +
       "Project: " + firebase.app().options.projectId + "\\n" +
       "UID login: " + uid + "\\n" +
       "Dokumen ditemukan: " + profile.exists + "\\n" +
-      "Peran: " + JSON.stringify(data.peran) + "\\n" +
-      "Aktif: " + JSON.stringify(data.aktif);
+      "Peran: " + JSON.stringify(data.role) + "\\n" +
+      "Aktif: " + JSON.stringify(data.active);
     await firebaseAuth.signOut();
     return alert(detail);
   }
