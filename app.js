@@ -782,36 +782,183 @@ function printEmployeeCard(i) {
   if (!e || !e.uid) return portalNotify("QR karyawan belum tersedia.");
 
   const qr = makeQr(e.uid, e.id);
-  const win = window.open("", "_blank", "width=600,height=750");
+  const win = window.open("", "_blank", "width=600,height=850");
   if (!win) return portalNotify("Izinkan pop-up browser untuk mencetak ID Card.");
 
   win.document.write(`
-    <!DOCTYPE html><html><head><title>ID Card ${safe(e.id)}</title>
-    <style>
-      body{font-family:Arial,sans-serif;display:flex;justify-content:center;padding:30px}
-      .card{width:340px;border:2px solid #183b65;border-radius:18px;text-align:center;overflow:hidden;padding-bottom:20px}
-      .head{background:#183b65;color:white;padding:18px;font-weight:bold}
-      .body{padding:20px}
-      .photo{width:120px;height:120px;object-fit:cover;border-radius:50%;border:4px solid #183b65;margin:8px auto}
-      .name{font-size:21px;font-weight:bold;margin:12px 0}
-      .qr{width:150px;height:150px}
-      .id{font-size:16px;font-weight:bold;margin:10px}
-      @media print{button{display:none}}
-    </style></head><body>
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>ID Card ${safe(e.id)}</title>
+      <style>
+        * { box-sizing: border-box; }
+        body {
+          margin: 0;
+          padding: 30px;
+          background: #eef2f7;
+          font-family: Arial, sans-serif;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        .card {
+          width: 350px;
+          min-height: 570px;
+          background: white;
+          border-radius: 22px;
+          overflow: hidden;
+          box-shadow: 0 12px 35px #14243b30;
+          text-align: center;
+          border: 1px solid #dce3ed;
+        }
+        .header {
+          background: linear-gradient(135deg,#102b50,#176b91);
+          color: white;
+          padding: 25px 15px 55px;
+        }
+        .brand {
+          font-size: 12px;
+          font-weight: bold;
+          letter-spacing: 2px;
+          opacity: .9;
+        }
+        .header h2 {
+          font-size: 19px;
+          margin: 12px 0 5px;
+        }
+        .header p {
+          font-size: 10px;
+          margin: 0;
+          letter-spacing: 1px;
+          opacity: .85;
+        }
+        .profile {
+          margin-top: -45px;
+          position: relative;
+        }
+        .photo {
+          width: 112px;
+          height: 112px;
+          object-fit: cover;
+          border-radius: 50%;
+          border: 5px solid white;
+          background: #e8edf3;
+          box-shadow: 0 4px 12px #0002;
+        }
+        .placeholder {
+          width: 112px;
+          height: 112px;
+          border-radius: 50%;
+          border: 5px solid white;
+          background: #e8edf3;
+          margin: auto;
+          font-size: 55px;
+          line-height: 102px;
+        }
+        .name {
+          color: #142b49;
+          font-size: 21px;
+          font-weight: bold;
+          margin: 13px 15px 5px;
+        }
+        .position {
+          color: #52657b;
+          font-size: 13px;
+          margin: 4px 10px;
+        }
+        .id {
+          display: inline-block;
+          background: #eaf2f8;
+          color: #16466c;
+          padding: 8px 18px;
+          border-radius: 20px;
+          font-size: 13px;
+          font-weight: bold;
+          margin: 14px 0;
+        }
+        .qr-area {
+          margin: 8px auto 12px;
+          padding: 12px;
+          width: 160px;
+          border: 1px solid #e1e7ef;
+          border-radius: 14px;
+        }
+        .qr {
+          width: 130px;
+          height: 130px;
+          display: block;
+        }
+        .scan {
+          font-size: 10px;
+          color: #718096;
+          margin-top: 8px;
+        }
+        .footer {
+          border-top: 1px solid #e7edf3;
+          margin-top: 12px;
+          padding: 13px;
+          color: #52657b;
+          font-size: 10px;
+          letter-spacing: 1px;
+        }
+        .status {
+          display: inline-block;
+          margin: 5px 0 12px;
+          padding: 5px 13px;
+          border-radius: 20px;
+          font-size: 10px;
+          font-weight: bold;
+          background: ${e.active === false ? "#fee2e2" : "#dcfce7"};
+          color: ${e.active === false ? "#991b1b" : "#166534"};
+        }
+        .print-btn {
+          margin-top: 20px;
+          border: 0;
+          background: #176b91;
+          color: white;
+          padding: 12px 25px;
+          border-radius: 9px;
+          font-weight: bold;
+          cursor: pointer;
+        }
+        @media print {
+          body { background: white; padding: 0; }
+          .card { box-shadow: none; }
+          .print-btn { display: none; }
+          @page { size: portrait; margin: 10mm; }
+        }
+      </style>
+    </head>
+    <body>
       <div class="card">
-        <div class="head">KARTU IDENTITAS KARYAWAN</div>
-        <div class="body">
-          ${e.foto ? `<img class="photo" src="${safe(e.foto)}" alt="Foto ${safe(e.nama)}">` : `<div style="font-size:65px">👤</div>`}
-          <div class="name">${safe(e.nama)}</div>
-          <div>${safe(e.jabatan || "-")}</div>
-          <div>${safe(e.divisi || "-")}</div>
-          <div class="id">ID: ${safe(e.id)}</div>
-          <img class="qr" src="${qr}">
-          <p>IDENTITAS RESMI KARYAWAN</p>
+        <div class="header">
+          <div class="brand">EMPLOYEE IDENTITY</div>
+          <h2>KARTU IDENTITAS KARYAWAN</h2>
+          <p>OFFICIAL EMPLOYEE CARD</p>
         </div>
+        <div class="profile">
+          ${e.foto
+            ? `<img class="photo" src="${safe(e.foto)}" alt="Foto karyawan">`
+            : `<div class="placeholder">👤</div>`}
+        </div>
+        <div class="name">${safe(e.nama)}</div>
+        <div class="position">${safe(e.jabatan || "-")}</div>
+        <div class="position">${safe(e.divisi || "-")}</div>
+        <div class="id">ID: ${safe(e.id)}</div>
+        <div>
+          <span class="status">${e.active === false ? "NONAKTIF" : "KARYAWAN AKTIF"}</span>
+        </div>
+        <div class="qr-area">
+          <img class="qr" src="${qr}" alt="QR Code">
+          <div class="scan">SCAN UNTUK IDENTIFIKASI</div>
+        </div>
+        <div class="footer">KARTU IDENTITAS RESMI KARYAWAN</div>
       </div>
-      <script>window.onload=()=>window.print();<\/script>
-    </body></html>`);
+      <button class="print-btn" onclick="window.print()">CETAK ID CARD</button>
+    </body>
+    </html>
+  `);
   win.document.close();
 }
 
