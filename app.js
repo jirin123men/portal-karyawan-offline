@@ -37,6 +37,7 @@ function show(id) {
     if (el(x)) el(x).classList.add("hidden");
   });
   if (el(id)) el(id).classList.remove("hidden");
+  if (id === "adminScreen") adminNavInit();
 }
 
 function showRegister() {
@@ -882,3 +883,98 @@ if ("serviceWorker" in navigator) {
 }
 
 init();
+
+// ======================================
+// NAVIGASI BAWAH HRD
+// ======================================
+function adminNavInit() {
+  const screen = el("adminScreen");
+  if (!screen) return;
+
+  const cards = Array.from(screen.querySelectorAll(":scope > .card"));
+  if (cards.length < 6) return;
+
+  const labels = [
+    ["⌂", "Home"],
+    ["＋", "Tambah"],
+    ["♙", "Karyawan"],
+    ["✓", "Persetujuan"],
+    ["▦", "Rekap"],
+    ["☻", "Profil"]
+  ];
+
+  let nav = el("adminBottomNav");
+
+  if (!nav) {
+    nav = document.createElement("nav");
+    nav.id = "adminBottomNav";
+    nav.setAttribute("aria-label", "Navigasi HRD");
+
+    labels.forEach((item, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "admin-nav-button";
+      button.innerHTML =
+        '<span class="admin-nav-icon">' + item[0] + '</span>' +
+        '<span class="admin-nav-label">' + item[1] + '</span>';
+
+      button.addEventListener("click", () => adminNavGo(index));
+      nav.appendChild(button);
+    });
+
+    screen.appendChild(nav);
+  }
+
+  // Informasi profil HRD ditambahkan pada bagian Profil.
+  const profileCard = cards[5];
+  if (!el("hrdProfilePanel")) {
+    const panel = document.createElement("div");
+    panel.id = "hrdProfilePanel";
+    panel.className = "hrd-profile-panel";
+
+    const title = document.createElement("h3");
+    title.textContent = "Profil HRD";
+
+    const email = document.createElement("p");
+    email.id = "hrdProfileEmail";
+
+    const uid = document.createElement("p");
+    uid.id = "hrdProfileUid";
+
+    panel.append(title, email, uid);
+    profileCard.insertBefore(panel, profileCard.firstChild);
+  }
+
+  const user = firebaseAuth && firebaseAuth.currentUser;
+  const emailElement = el("hrdProfileEmail");
+  const uidElement = el("hrdProfileUid");
+
+  if (emailElement) {
+    emailElement.textContent = "Email: " + (user?.email || "-");
+  }
+  if (uidElement) {
+    uidElement.textContent = "UID: " + (user?.uid || "-");
+  }
+
+  adminNavGo(0);
+}
+
+function adminNavGo(index) {
+  const screen = el("adminScreen");
+  if (!screen) return;
+
+  const cards = Array.from(screen.querySelectorAll(":scope > .card"));
+  const nav = el("adminBottomNav");
+  if (!nav || index < 0 || index >= 6) return;
+
+  cards.forEach((card, i) => {
+    card.classList.toggle("admin-section-hidden", i !== index);
+  });
+
+  Array.from(nav.querySelectorAll("button")).forEach((button, i) => {
+    button.classList.toggle("active", i === index);
+    button.setAttribute("aria-current", i === index ? "page" : "false");
+  });
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}

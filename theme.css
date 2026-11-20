@@ -491,3 +491,101 @@ hr {
     padding: 24px;
   }
 }
+
+/* ======================================
+   NAVIGASI BAWAH HRD
+====================================== */
+#adminScreen {
+  padding-bottom: 100px;
+}
+
+.admin-section-hidden {
+  display: none !important;
+}
+
+#adminBottomNav {
+  position: fixed;
+  z-index: 9999;
+  bottom: max(10px, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(760px, calc(100% - 20px));
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 3px;
+  padding: 9px 5px;
+  border: 1px solid rgba(255,255,255,.7);
+  border-radius: 22px;
+  background: rgba(255,255,255,.96);
+  box-shadow: 0 8px 30px rgba(35,55,100,.20);
+  backdrop-filter: blur(16px);
+}
+
+.admin-nav-button {
+  border: 0;
+  background: transparent;
+  color: #778198;
+  border-radius: 14px;
+  min-width: 0;
+  min-height: 52px;
+  padding: 5px 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  font: inherit;
+}
+
+.admin-nav-button.active {
+  color: #fff;
+  background: linear-gradient(135deg, #3977ed, #8663e9);
+  box-shadow: 0 4px 12px rgba(57,119,237,.25);
+}
+
+.admin-nav-icon {
+  font-size: 21px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.admin-nav-label {
+  font-size: 10px;
+  line-height: 1.2;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.hrd-profile-panel {
+  padding: 17px;
+  margin-bottom: 18px;
+  border-radius: 17px;
+  background: linear-gradient(135deg, #edf3ff, #f4edff);
+  overflow-wrap: anywhere;
+}
+
+.hrd-profile-panel h3 {
+  margin-top: 0;
+}
+
+.hrd-profile-panel p {
+  font-size: 13px;
+  color: #53617b;
+  margin: 8px 0;
+}
+
+@media (max-width: 380px) {
+  #adminBottomNav {
+    padding: 7px 3px;
+    gap: 1px;
+  }
+
+  .admin-nav-label {
+    font-size: 9px;
+  }
+
+  .admin-nav-icon {
+    font-size: 19px;
+  }
+}
