@@ -1,4 +1,4 @@
-const CACHE = "portal-karyawan-offline-v8";
+const CACHE = "portal-karyawan-offline-v9-firebase";
 
 const FILES = [
   "./",
