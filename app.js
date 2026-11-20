@@ -594,7 +594,9 @@ function showEmployeeDetail(i) {
       <div style="background:var(--card,#fff);color:var(--text, #222);max-width:600px;margin:25px auto;padding:22px;border-radius:16px">
         <h2>Detail Karyawan</h2>
         <div style="text-align:center;margin:18px">
-          <div style="font-size:42px">👤</div>
+          ${e.foto
+            ? `<img src="${safe(e.foto)}" alt="Foto ${safe(e.nama)}" style="width:130px;height:130px;object-fit:cover;border-radius:50%;border:4px solid #183b65">`
+            : `<div style="font-size:70px">👤</div>`}
           <h3>${safe(e.nama)}</h3>
           <p>${safe(e.jabatan || "-")} • ${safe(e.divisi || "-")}</p>
         </div>
@@ -790,6 +792,7 @@ function printEmployeeCard(i) {
       .card{width:340px;border:2px solid #183b65;border-radius:18px;text-align:center;overflow:hidden;padding-bottom:20px}
       .head{background:#183b65;color:white;padding:18px;font-weight:bold}
       .body{padding:20px}
+      .photo{width:120px;height:120px;object-fit:cover;border-radius:50%;border:4px solid #183b65;margin:8px auto}
       .name{font-size:21px;font-weight:bold;margin:12px 0}
       .qr{width:150px;height:150px}
       .id{font-size:16px;font-weight:bold;margin:10px}
@@ -798,6 +801,7 @@ function printEmployeeCard(i) {
       <div class="card">
         <div class="head">KARTU IDENTITAS KARYAWAN</div>
         <div class="body">
+          ${e.foto ? `<img class="photo" src="${safe(e.foto)}" alt="Foto ${safe(e.nama)}">` : `<div style="font-size:65px">👤</div>`}
           <div class="name">${safe(e.nama)}</div>
           <div>${safe(e.jabatan || "-")}</div>
           <div>${safe(e.divisi || "-")}</div>
