@@ -329,6 +329,7 @@ function renderAdmin() {
   el("employeeList").innerHTML = db.employees.length
     ? db.employees.map((e, i) => `
       <div class="item">
+        ${e.foto ? `<img src="${safe(e.foto)}" alt="Foto ${safe(e.nama)}" style="width:64px;height:64px;object-fit:cover;border-radius:50%;margin-bottom:8px">` : ""}
         <b>${safe(e.nama)}</b><br>
         ID: ${safe(e.id)} • ${safe(e.jabatan || "-")} •
         ${safe(e.divisi || "-")}<br>
@@ -613,6 +614,7 @@ function showEmployeeDetail(i) {
 
 // EDIT DATA KARYAWAN
 function editEmployee(i) {
+  window.editEmployeePhotoData = "";
   const e = db.employees[i];
   if (!e) return;
 
@@ -631,6 +633,15 @@ function editEmployee(i) {
         <input value="${safe(e.id)}" disabled>
         <label>Nama lengkap</label>
         <input id="editEmpNama" value="${safe(e.nama)}">
+        <label>Foto Karyawan</label>
+        <div style="margin:10px 0">
+          <img id="editEmpFotoPreview"
+            src="${safe(e.foto || '')}"
+            style="width:110px;height:110px;object-fit:cover;border-radius:50%;background:#eee;display:${e.foto ? 'block' : 'none'}">
+          <input id="editEmpFoto" type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onchange="previewEmployeePhoto(this)">
+        </div>
         <label>Jabatan</label>
         <input id="editEmpJabatan" value="${safe(e.jabatan)}">
         <label>Divisi / Bagian</label>
@@ -661,6 +672,64 @@ function editEmployee(i) {
   if (status && e.statusKerja) status.value = e.statusKerja;
 }
 
+
+window.editEmployeePhotoData = "";
+
+async function compressEmployeePhoto(file) {
+  if (!file || !file.type.startsWith("image/")) {
+    throw new Error("Pilih file gambar yang valid.");
+  }
+
+  const imageUrl = URL.createObjectURL(file);
+
+  try {
+    const img = new Image();
+    img.src = imageUrl;
+    await img.decode();
+
+    const maxSide = 500;
+    const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(img.width * scale);
+    canvas.height = Math.round(img.height * scale);
+
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    let quality = 0.7;
+    let data = canvas.toDataURL("image/jpeg", quality);
+
+    while (data.length * 0.75 > 350 * 1024 && quality > 0.35) {
+      quality -= 0.1;
+      data = canvas.toDataURL("image/jpeg", quality);
+    }
+
+    if (data.length * 0.75 > 350 * 1024) {
+      throw new Error("Ukuran foto masih terlalu besar.");
+    }
+
+    return data;
+  } finally {
+    URL.revokeObjectURL(imageUrl);
+  }
+}
+
+async function previewEmployeePhoto(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+
+  try {
+    window.editEmployeePhotoData = await compressEmployeePhoto(file);
+    const preview = document.getElementById("editEmpFotoPreview");
+    preview.src = window.editEmployeePhotoData;
+    preview.style.display = "block";
+  } catch (err) {
+    window.editEmployeePhotoData = "";
+    input.value = "";
+    portalNotify(err.message || "Foto gagal diproses.");
+  }
+}
+
 async function saveEmployeeEdit(i) {
   const e = db.employees[i];
   if (!e) return;
@@ -678,6 +747,10 @@ async function saveEmployeeEdit(i) {
     statusKerja: document.getElementById("editEmpStatus").value,
     lokasiKerja: document.getElementById("editEmpLokasi").value.trim()
   };
+
+  if (window.editEmployeePhotoData) {
+    updates.foto = window.editEmployeePhotoData;
+  }
 
   try {
     const batch = firebaseDB.batch();
