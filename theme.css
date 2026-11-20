@@ -1,22 +1,19 @@
 :root {
-  --blue: #0756a5;
-  --blue-dark: #07366f;
-  --blue-light: #eaf3ff;
-  --bg: #f3f6fb;
-  --text: #172b4d;
-  --muted: #77869b;
-  --white: #ffffff;
-  --border: #e8edf5;
-  --green: #15966a;
-  --shadow: 0 8px 26px rgba(20, 54, 100, .07);
+  --blue: #3977ed;
+  --blue-dark: #244fa8;
+  --bg: #f5f7fc;
+  --text: #26334d;
+  --muted: #8490a5;
+  --border: #e9edf5;
+  --white: #fff;
+  --green: #16b889;
+  --purple: #8663e9;
+  --orange: #f4a640;
+  --pink: #ec70a1;
 }
 
 * {
   box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
 }
 
 body {
@@ -24,41 +21,39 @@ body {
   padding-bottom: 35px;
   background: var(--bg);
   color: var(--text);
-  font-family: Inter, "Segoe UI", Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
+  font-family: "Segoe UI", Arial, sans-serif;
 }
 
 header {
   position: relative;
   overflow: hidden;
-  padding: 29px 22px 48px;
+  padding: 28px 21px 48px;
   color: white;
-  background: linear-gradient(135deg, #063b78 0%, #0756a5 55%, #1684d8 100%);
-  border-radius: 0 0 30px 30px;
-  box-shadow: 0 10px 30px rgba(5, 65, 130, .18);
+  background: linear-gradient(130deg,#386be8,#6688f4,#8b75ef);
+  border-radius: 0 0 28px 28px;
+  box-shadow: 0 9px 25px #5578e52b;
 }
 
 header::before,
 header::after {
   content: "";
   position: absolute;
-  border: 1px solid rgba(255,255,255,.12);
   border-radius: 50%;
-  pointer-events: none;
+  background: #ffffff13;
 }
 
 header::before {
-  width: 220px;
-  height: 220px;
-  right: -85px;
-  top: -120px;
+  width: 190px;
+  height: 190px;
+  right: -55px;
+  top: -95px;
 }
 
 header::after {
-  width: 145px;
-  height: 145px;
-  right: 35px;
-  top: -95px;
+  width: 110px;
+  height: 110px;
+  right: 85px;
+  top: -65px;
 }
 
 header h2 {
@@ -67,54 +62,61 @@ header h2 {
   margin: 0 0 7px;
   font-size: 23px;
   font-weight: 800;
-  letter-spacing: -.5px;
 }
 
 header p {
   position: relative;
   z-index: 1;
   margin: 0;
-  color: #d8eaff;
+  color: #edf1ff;
   font-size: 12px;
-  letter-spacing: .2px;
 }
 
 main {
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 720px;
-  margin: -23px auto 0;
-  padding: 0 16px 40px;
+  max-width: 760px;
+  margin: -22px auto 0;
+  padding: 0 15px 40px;
 }
 
 .card {
   margin-bottom: 16px;
-  padding: 21px;
-  background: var(--white);
-  border: 1px solid rgba(225, 233, 244, .9);
+  padding: 20px;
+  background: white;
+  border: 1px solid #edf0f7;
   border-radius: 21px;
-  box-shadow: var(--shadow);
+  box-shadow: 0 6px 22px rgba(38,55,95,.055);
 }
 
 .card h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin: 0 0 16px;
-  color: var(--blue-dark);
+  color: #293958;
   font-size: 16px;
   font-weight: 800;
-  letter-spacing: -.2px;
 }
 
-.card h4 {
-  margin: 13px 0 9px;
-  color: var(--blue-dark);
-  font-size: 14px;
+.card h3::before {
+  content: "✦";
+  display: inline-grid;
+  flex: 0 0 35px;
+  width: 35px;
+  height: 35px;
+  place-items: center;
+  color: #fff;
+  background: #6688f4;
+  border-radius: 12px;
+  font-size: 17px;
 }
 
 label {
   display: block;
-  margin: 15px 0 7px;
-  color: #536781;
+  margin: 14px 0 7px;
+  color: #61708a;
   font-size: 12px;
   font-weight: 700;
 }
@@ -122,76 +124,72 @@ label {
 input,
 select,
 textarea {
-  display: block;
   width: 100%;
-  min-height: 48px;
+  min-height: 47px;
   padding: 13px 14px;
   color: var(--text);
-  background: #f9fbfe;
-  border: 1px solid #dfe7f1;
+  background: #fafbfe;
+  border: 1px solid #e2e8f2;
   border-radius: 13px;
   outline: none;
   font-family: inherit;
   font-size: 14px;
-  transition: .2s ease;
+  transition: .2s;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
   background: white;
-  border-color: #1681d5;
-  box-shadow: 0 0 0 3px rgba(22,129,213,.12);
+  border-color: #6688f4;
+  box-shadow: 0 0 0 3px #6688f41c;
 }
 
 textarea {
-  min-height: 95px;
-  resize: vertical;
+  min-height: 90px;
 }
 
 button {
   min-height: 43px;
   padding: 12px 16px;
   color: white;
-  background: linear-gradient(135deg, #0879cf, #0753a0);
+  background: linear-gradient(135deg,#527df0,#3864d9);
   border: 0;
   border-radius: 13px;
-  box-shadow: 0 5px 13px rgba(7, 86, 165, .17);
+  box-shadow: 0 4px 12px #527df02c;
   font-family: inherit;
   font-size: 12px;
   font-weight: 800;
-  letter-spacing: .25px;
   cursor: pointer;
-  transition: transform .15s, opacity .15s;
+  transition: .15s;
 }
 
 button:active {
   transform: scale(.98);
-  opacity: .9;
 }
 
 button.full {
   display: block;
   width: 100%;
   min-height: 47px;
-  margin-top: 12px;
+  margin-top: 11px;
 }
 
 button.secondary {
-  color: #0756a5;
-  background: #eaf3ff;
+  color: #4771d9;
+  background: #edf2ff;
   box-shadow: none;
 }
 
 button.green {
   color: white;
-  background: linear-gradient(135deg, #16a879, #087c59);
-  box-shadow: 0 5px 13px rgba(21,150,106,.15);
+  background: linear-gradient(135deg,#22c99a,#12a77c);
+  box-shadow: 0 4px 12px #16b88926;
 }
 
 button.danger {
   color: white;
-  background: #c83b4b;
+  background: linear-gradient(135deg,#f16c78,#d94b63);
   box-shadow: none;
 }
 
@@ -199,35 +197,34 @@ button.smallbtn {
   min-height: 34px;
   margin: 3px;
   padding: 8px 11px;
-  border-radius: 10px;
   font-size: 11px;
+  border-radius: 10px;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 11px;
 }
 
 .stat {
   min-width: 0;
-  padding: 17px 15px;
-  background: linear-gradient(145deg, #f1f7ff, #e5f0ff);
-  border: 1px solid #e0ebfa;
+  padding: 17px 14px;
+  background: linear-gradient(145deg,#edf3ff,#e2eaff);
+  border: 0;
   border-radius: 17px;
 }
 
 .stat strong {
   display: block;
   margin-bottom: 6px;
-  color: #0756a5;
+  color: #3869df;
   font-size: 29px;
   font-weight: 850;
-  line-height: 1.1;
 }
 
 .stat span {
-  color: #667991;
+  color: #64738d;
   font-size: 11px;
   font-weight: 700;
 }
@@ -258,8 +255,8 @@ button.smallbtn {
 .status {
   display: inline-block;
   padding: 6px 11px;
-  color: #966000;
-  background: #fff3d9;
+  color: #a36b12;
+  background: #fff2d9;
   border-radius: 30px;
   font-size: 11px;
   font-weight: 800;
@@ -267,13 +264,13 @@ button.smallbtn {
 
 .status.ok,
 .ok {
-  color: #087a4d;
-  background: #dcf8eb;
+  color: #087e59;
+  background: #dcf8ed;
 }
 
 .no {
-  color: #b42332;
-  background: #ffe7e7;
+  color: #c13f54;
+  background: #ffe8ed;
 }
 
 .actions {
@@ -286,8 +283,8 @@ button.smallbtn {
 #camera {
   width: 100%;
   max-height: 330px;
-  background: #071426;
-  border-radius: 17px;
+  background: #17233d;
+  border-radius: 16px;
   object-fit: cover;
 }
 
@@ -316,89 +313,123 @@ hr {
   display: none !important;
 }
 
-/* Dashboard HRD dan karyawan */
+/* Dashboard utama */
 #adminScreen > .card:first-child,
 #employeeScreen > .card:first-child {
   padding: 23px;
   color: white;
-  background: linear-gradient(145deg, #063b78, #0879cf);
+  background: linear-gradient(135deg,#416fe8,#8069e9);
   border: 0;
-  box-shadow: 0 10px 26px rgba(5, 65, 130, .17);
+  box-shadow: 0 10px 25px #5578e52c;
 }
 
 #adminScreen > .card:first-child h3,
 #employeeScreen > .card:first-child h3 {
   color: white;
-  font-size: 19px;
+}
+
+#adminScreen > .card:first-child h3::before,
+#employeeScreen > .card:first-child h3::before {
+  color: #fff;
+  background: #ffffff2b;
 }
 
 #adminScreen > .card:first-child .muted,
 #employeeScreen > .card:first-child .muted {
-  color: #e0efff;
+  color: #eef1ff;
 }
 
 #adminScreen > .card:first-child .stat,
 #employeeScreen > .card:first-child .stat {
-  background: rgba(255,255,255,.97);
-  border: 0;
+  background: #ffffff;
 }
 
 #adminScreen > .card:first-child button,
 #employeeScreen > .card:first-child button {
-  color: #0756a5;
+  color: #466be0;
   background: white;
   box-shadow: none;
 }
 
-/* Kartu dashboard */
-#adminScreen > .card:not(:first-child),
-#employeeScreen > .card:not(:first-child) {
-  position: relative;
+/* Warna identitas tiap bagian HRD */
+#adminScreen > .card:nth-child(2) h3::before {
+  content: "＋";
+  background: #3979ee;
 }
 
-#adminScreen > .card:nth-child(2) {
-  border-top: 3px solid #1681d5;
+#adminScreen > .card:nth-child(3) h3::before {
+  content: "♙";
+  background: #17b98b;
 }
 
-#adminScreen > .card:nth-child(3) {
-  border-top: 3px solid #16a879;
+#adminScreen > .card:nth-child(4) h3::before {
+  content: "✓";
+  background: #ed9c3c;
 }
 
-#adminScreen > .card:nth-child(4),
-#adminScreen > .card:nth-child(5) {
-  border-top: 3px solid #d6a23c;
+#adminScreen > .card:nth-child(5) h3::before {
+  content: "◷";
+  background: #8969e9;
 }
 
-#adminScreen > .card:nth-child(6) {
-  border-top: 3px solid #7894b5;
+#adminScreen > .card:nth-child(6) h3::before {
+  content: "▤";
+  background: #e66f9d;
 }
 
-#employeeScreen > .card:nth-child(2) {
-  border-top: 3px solid #16a879;
+/* Kartu karyawan */
+#employeeScreen > .card:nth-child(2) h3::before {
+  content: "◷";
+  background: #16b889;
+}
+
+#employeeScreen > .card:nth-child(3) h3::before {
+  content: "✉";
+  background: #ed9c3c;
+}
+
+#employeeScreen > .card:nth-child(4) h3::before {
+  content: "▤";
+  background: #8969e9;
+}
+
+#employeeScreen > .card:nth-child(5) h3::before {
+  content: "◷";
+  background: #3979ee;
 }
 
 #employeeScreen > .card:nth-child(2) button.green {
   min-height: 49px;
 }
 
-/* Login dan pendaftaran */
+/* Login */
 #loginScreen .card,
 #registerScreen .card,
 #setupScreen .card {
-  padding: 23px;
+  padding: 22px;
 }
 
-#loginScreen .card:first-child,
-#registerScreen .card,
-#setupScreen .card {
-  border-top: 4px solid #0879cf;
+#loginScreen .card:first-child h3::before {
+  content: "♙";
+  background: #3979ee;
 }
 
-#loginScreen .card:first-child button {
-  min-height: 49px;
+#loginScreen .card:nth-child(2) h3::before {
+  content: "＋";
+  background: #16b889;
 }
 
-/* Area hasil QR */
+#loginScreen .card:nth-child(3) h3::before {
+  content: "▣";
+  background: #8969e9;
+}
+
+#registerScreen .card h3::before,
+#setupScreen .card h3::before {
+  content: "♙";
+  background: #3979ee;
+}
+
 #newQrResult {
   text-align: center;
 }
@@ -407,11 +438,10 @@ hr {
   display: none;
 }
 
-/* Responsif HP */
-@media (max-width: 480px) {
+/* Responsif */
+@media(max-width:480px) {
   header {
-    padding: 26px 19px 43px;
-    border-radius: 0 0 25px 25px;
+    padding: 25px 18px 43px;
   }
 
   header h2 {
@@ -424,13 +454,9 @@ hr {
   }
 
   .card {
-    padding: 18px;
+    padding: 17px;
     margin-bottom: 13px;
     border-radius: 18px;
-  }
-
-  .card h3 {
-    font-size: 15px;
   }
 
   .stat {
@@ -440,13 +466,9 @@ hr {
   .stat strong {
     font-size: 25px;
   }
-
-  button {
-    font-size: 11px;
-  }
 }
 
-@media (max-width: 350px) {
+@media(max-width:350px) {
   .grid {
     gap: 8px;
   }
@@ -456,12 +478,11 @@ hr {
   }
 
   .card {
-    padding: 15px;
+    padding: 14px;
   }
 }
 
-/* Tampilan laptop */
-@media (min-width: 900px) {
+@media(min-width:900px) {
   main {
     max-width: 850px;
   }
