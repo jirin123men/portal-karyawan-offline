@@ -166,6 +166,7 @@ async function adminLogin() {
     el("adminPassword").value = "";
     renderAdmin();
     show("adminScreen");
+    adminNavInit();
 
   } catch (e) {
     console.error("LOGIN HRD:", e);
@@ -891,7 +892,7 @@ function adminNavInit() {
   const screen = el("adminScreen");
   if (!screen) return;
 
-  const cards = Array.from(screen.querySelectorAll(":scope > .card"));
+  const cards = Array.from(screen.children).filter(node => node.classList && node.classList.contains("card"));
   if (cards.length < 6) return;
 
   const labels = [
@@ -963,7 +964,7 @@ function adminNavGo(index) {
   const screen = el("adminScreen");
   if (!screen) return;
 
-  const cards = Array.from(screen.querySelectorAll(":scope > .card"));
+  const cards = Array.from(screen.children).filter(node => node.classList && node.classList.contains("card"));
   const nav = el("adminBottomNav");
   if (!nav || index < 0 || index >= 6) return;
 

@@ -589,3 +589,14 @@ hr {
     font-size: 19px;
   }
 }
+
+/* Perbaikan visibilitas navigasi HRD */
+#adminBottomNav {
+  display: grid !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+#adminScreen .admin-section-hidden {
+  display: none !important;
+}
